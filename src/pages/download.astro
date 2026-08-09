@@ -1,0 +1,100 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const releasesUrl = 'https://github.com/dipaneb/umbra/releases/latest';
+---
+
+<Layout
+	title="Download"
+	description="Download Umbra for Mac (Apple Silicon). Signed, notarized, and self-updating with your consent."
+>
+	<section class="download">
+		<h1>Download Umbra</h1>
+		<p class="lede">
+			The latest release, straight from GitHub — signed and notarized by Apple, so macOS opens it
+			without a Gatekeeper warning.
+		</p>
+
+		<a class="button" href={releasesUrl}>Download for Mac (Apple Silicon)</a>
+
+		<dl class="specs">
+			<div>
+				<dt>Platform</dt>
+				<dd>macOS on Apple Silicon (M-series) only — no Intel Mac build, no Windows or Linux build yet.</dd>
+			</div>
+			<div>
+				<dt>Format</dt>
+				<dd><code>.dmg</code> disk image, signed and notarized by Apple.</dd>
+			</div>
+			<div>
+				<dt>Updates</dt>
+				<dd>
+					Umbra checks for updates automatically — the one disclosed network exception — and
+					always asks before installing one. See the <a href="/faq">FAQ</a> for the full privacy
+					picture.
+				</dd>
+			</div>
+		</dl>
+
+		<p class="fine-print">
+			This link always resolves to the newest release, not a fixed version — it won't go stale as
+			Umbra updates.
+		</p>
+	</section>
+</Layout>
+
+<style>
+	.download {
+		max-width: 36rem;
+		margin: 0 auto;
+		padding: 4rem 1.5rem;
+		text-align: center;
+	}
+
+	.lede {
+		color: var(--color-text-muted);
+		margin: 0 0 2rem;
+	}
+
+	.button {
+		display: inline-block;
+		background: var(--color-accent);
+		color: var(--color-accent-contrast);
+		text-decoration: none;
+		font-weight: 600;
+		padding: 0.9rem 1.75rem;
+		border-radius: 0.4rem;
+		font-size: 1.05rem;
+	}
+
+	.button:hover {
+		opacity: 0.9;
+		color: var(--color-accent-contrast);
+	}
+
+	.specs {
+		text-align: left;
+		margin: 3rem 0 1rem;
+		border-top: 1px solid var(--color-border);
+		padding-top: 1.5rem;
+	}
+
+	.specs div {
+		margin-bottom: 1.25rem;
+	}
+
+	.specs dt {
+		font-weight: 700;
+		margin-bottom: 0.25rem;
+	}
+
+	.specs dd {
+		margin: 0;
+		color: var(--color-text-muted);
+	}
+
+	.fine-print {
+		font-size: 0.85rem;
+		color: var(--color-text-muted);
+	}
+</style>
