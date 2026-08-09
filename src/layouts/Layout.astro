@@ -31,11 +31,9 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 			both off, so the only signal collected is "a page was viewed" —
 			matching this footer's own disclosure below.
 
-			POSTHOG_PROJECT_API_KEY_PLACEHOLDER_REPLACE_BEFORE_DEPLOY: no real
-			PostHog project exists yet (one-time manual setup, outside this
-			story's code — see Dev Agent Record). Swap in the real project
-			API key from PostHog's Project Settings before deploying; it's a
-			client-side key, safe to embed in public JS.
+			This is PostHog's Project API Key (public, client-side by design
+			— safe to ship in page source, unlike a Personal API Key). EU
+			region project, hence the eu.i.posthog.com host below.
 		-->
 		<script is:inline>
 			!(function (t, e) {
@@ -81,8 +79,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 					}),
 					(e.__SV = 1));
 			})(document, window.posthog || []);
-			posthog.init('POSTHOG_PROJECT_API_KEY_PLACEHOLDER_REPLACE_BEFORE_DEPLOY', {
-				api_host: 'https://us.i.posthog.com',
+			posthog.init('phc_qFffTVrdyHuB6yyzY5mSFbjWHAMD2t7M9aid2ySCQ9fL', {
+				api_host: 'https://eu.i.posthog.com',
 				autocapture: false,
 				disable_session_recording: true,
 			});
