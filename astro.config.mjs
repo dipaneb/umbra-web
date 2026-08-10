@@ -8,5 +8,8 @@ import sitemap from '@astrojs/sitemap';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://umbra-web-beta.vercel.app',
+  // Pins one canonical URL form per page (matches the directory/index.html
+  // build output) so /faq and /faq/ don't count as two distinct URLs for SEO.
+  trailingSlash: 'always',
   integrations: [sitemap()],
 });

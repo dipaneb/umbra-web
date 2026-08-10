@@ -1,11 +1,14 @@
 ---
 interface Props {
-	title: string;
-	description: string;
+	title?: string;
+	description?: string;
 }
 
-const { title, description } = Astro.props;
+const { title = 'Home', description = 'Umbra: privacy-first developer tools that don\'t phone home.' } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const isProd = import.meta.env.PROD;
+
+const isCurrent = (href: string) => Astro.url.pathname === href || Astro.url.pathname === `${href}/`;
 ---
 
 <!doctype html>
@@ -34,7 +37,12 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 			This is PostHog's Project API Key (public, client-side by design
 			— safe to ship in page source, unlike a Personal API Key). EU
 			region project, hence the eu.i.posthog.com host below.
+
+			Only loaded on production builds (isProd guard) — local `astro
+			dev` sessions and Vercel preview deploys don't pollute
+			production page-view counts.
 		-->
+		{isProd && (
 		<script is:inline>
 			!(function (t, e) {
 				var o, n, p, r;
@@ -85,15 +93,16 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 				disable_session_recording: true,
 			});
 		</script>
+		)}
 	</head>
 	<body>
 		<header class="site-header">
 			<nav class="site-nav" aria-label="Primary">
 				<a class="brand" href="/">Umbra</a>
 				<ul>
-					<li><a href="/">Home</a></li>
-					<li><a href="/faq">FAQ</a></li>
-					<li><a href="/download" class="cta">Download</a></li>
+					<li><a href="/" aria-current={isCurrent('/') ? 'page' : undefined}>Home</a></li>
+					<li><a href="/faq" aria-current={isCurrent('/faq') ? 'page' : undefined}>FAQ</a></li>
+					<li><a href="/download" class="cta" aria-current={isCurrent('/download') ? 'page' : undefined}>Download</a></li>
 				</ul>
 			</nav>
 		</header>
@@ -104,7 +113,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 		<footer class="site-footer">
 			<p>
-				Umbra is closed-source but publicly readable — <a href="https://github.com/dipaneb/umbra">source on GitHub</a>.
+				Umbra's code is public — <a href="https://github.com/dipaneb/umbra">read it on GitHub</a> — but it's
+				not open source; the license is All Rights Reserved.
 			</p>
 			<p>
 				This site (umbra-web) uses <a href="https://posthog.com">PostHog</a> for anonymous page-view
