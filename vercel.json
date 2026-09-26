@@ -1,0 +1,10 @@
+{
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "umbra-web-beta.vercel.app" }],
+      "destination": "https://umbra.dipane.fr/:path*",
+      "permanent": true
+    }
+  ]
+}
