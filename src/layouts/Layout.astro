@@ -189,6 +189,20 @@ const ogImageAlt =
 				api_host: 'https://eu.i.posthog.com',
 				autocapture: false,
 				disable_session_recording: true,
+				// Cookieless (Step 6.8 / landing-strategy.md §4): without this,
+				// posthog-js defaults to `persistence: 'localStorage+cookie'`,
+				// which sets a real persistent cookie — contradicting the "No
+				// cookies" claim on /privacy. `cookieless_mode: 'always'` sets no
+				// cookie/storage at all; identity is a privacy-preserving hash
+				// computed server-side instead. Must also be enabled in the
+				// PostHog project's own settings ("Cookieless server hash mode"),
+				// or these events are dropped.
+				cookieless_mode: 'always',
+				// identify()/alias() are unused anywhere on this site (no
+				// accounts) and become meaningless under cookieless_mode per
+				// PostHog's own guidance — explicitly disabled rather than left
+				// silently unreachable.
+				person_profiles: 'never',
 			});
 		</script>
 		)}
@@ -254,7 +268,7 @@ const ogImageAlt =
 			<!-- TODO(developer): real name — CLAUDE.md's privacy rule blocks committing one here;
 			     see landing-copy.md §4 "About" section for the intended wording. -->
 			<p>{t('footer.attribution')}</p>
-			<p>{t('footer.analytics')}</p>
+			<p set:html={t('footer.analytics').replace('{privacy}', `<a href="${localizePath('/privacy/', lang)}">${t('footer.analyticsPrivacyLinkText')}</a>`)} />
 			<p set:html={t('footer.licence').replace('{eula}', `<a href="${localizePath('/eula/', lang)}">${t('footer.eula')}</a>`)} />
 			<p set:html={t('footer.watch').replace('{watchLink}', `<a href="https://github.com/dipaneb/umbra" data-analytics="notify_me_clicked">${t('footer.watchLinkText')}</a>`)} />
 			<p>

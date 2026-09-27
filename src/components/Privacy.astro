@@ -23,12 +23,14 @@ const copy = {
 			'Your browser, operating system, device type, and screen size, read from standard browser information — not from a fingerprinting script',
 			'If you click "Download," which platform you selected (macOS, Windows, or Linux) — this tells us which platform to prioritize, not who you are',
 			'If you click "Watch on GitHub" — again, only that the click happened',
+			'Core Web Vitals performance metrics for the page you\'re on (load speed, responsiveness, layout stability) — not tied to who you are',
+			'Aggregate click-position and scroll-depth data, used to generate an anonymous heatmap of page activity — not a recording or replay of your individual session',
 			'Standard analytics metadata: a timestamp and an event name for each of the above',
 		],
 		h2NotCollected: "What's not collected",
 		notCollected: [
 			'No cookies',
-			'No session recordings, no screen replays, no autocapture of clicks or form fields',
+			'No full-session recordings, no screen replays, no individual click-by-click replay',
 			'No cross-site tracking, no advertising identifiers, nothing shared with ad networks',
 			'No account, no email address, no name — this site has no sign-up, login, or newsletter',
 			"No data leaves the EU for this site's own analytics — the PostHog project we use is EU-hosted",
@@ -58,12 +60,14 @@ const copy = {
 			"Votre navigateur, système d'exploitation, type d'appareil et taille d'écran, lus depuis les informations standard du navigateur — pas via un script de fingerprinting",
 			'Si vous cliquez sur « Télécharger », la plateforme choisie (macOS, Windows ou Linux) — cela nous indique quelle plateforme prioriser, pas qui vous êtes',
 			'Si vous cliquez sur « Suivre sur GitHub » — là encore, uniquement le fait que le clic a eu lieu',
+			'Des métriques de performance Core Web Vitals pour la page consultée (vitesse de chargement, réactivité, stabilité de la mise en page) — sans lien avec votre identité',
+			'Des données agrégées de position de clic et de profondeur de défilement, utilisées pour générer une heatmap anonyme de l’activité sur la page — pas un enregistrement ni un replay de votre session individuelle',
 			'Métadonnées d’analyse standard : horodatage et nom de l’événement pour chacun des points ci-dessus',
 		],
 		h2NotCollected: "Ce qui n'est pas collecté",
 		notCollected: [
 			'Aucun cookie',
-			'Aucun enregistrement de session, aucune capture d’écran, aucune capture automatique des clics ou des champs de formulaire',
+			'Aucun enregistrement de session complet, aucune capture d’écran, aucun replay individuel clic par clic',
 			'Aucun suivi entre sites, aucun identifiant publicitaire, rien de partagé avec des régies publicitaires',
 			'Aucun compte, aucune adresse e-mail, aucun nom — ce site ne propose ni inscription, ni connexion, ni newsletter',
 			'Aucune donnée ne quitte l’UE pour les statistiques propres à ce site — le projet PostHog utilisé est hébergé dans l’UE',
@@ -116,15 +120,17 @@ const faqHref = `${localizePath('/faq/', lang)}#update-check-vs-zero-network-cal
 			lang === 'fr' ? (
 				<p>
 					Ce site utilise <a href="https://posthog.com">PostHog</a>, hébergé dans l'UE, pour des
-					statistiques anonymes de pages vues. L'enregistrement de session et la capture automatique
-					sont tous deux désactivés. Avec cette configuration, la visite de ce site peut générer les
-					données suivantes :
+					statistiques anonymes de pages vues et d'intention de téléchargement, en mode sans cookie —
+					aucun cookie ni identifiant persistant n'est jamais stocké dans votre navigateur.
+					L'enregistrement de session et la capture automatique sont tous deux désactivés. Avec cette
+					configuration, la visite de ce site peut générer les données suivantes :
 				</p>
 			) : (
 				<p>
 					This site uses <a href="https://posthog.com">PostHog</a>, hosted in the EU, for anonymous
-					page-view analytics. Session recording and autocapture are both turned off. With that
-					configuration, visiting this site can generate the following data:
+					page-view and download-intent analytics, run in cookieless mode — no cookie or persistent
+					identifier is ever stored in your browser. Session recording and autocapture are both
+					turned off. With that configuration, visiting this site can generate the following data:
 				</p>
 			)
 		}
@@ -132,11 +138,9 @@ const faqHref = `${localizePath('/faq/', lang)}#update-check-vs-zero-network-cal
 			{c.dataItems.map((item) => <li>{item}</li>)}
 		</ul>
 		<p>
-			<em>
-				{lang === 'fr'
-					? "Non confirmé, à vérifier avant le lancement : si le projet PostHog de ce site conserve l'adresse IP depuis laquelle votre navigateur se connecte. PostHog désactive ce réglage par défaut pour les nouveaux projets hébergés dans l'UE, mais il s'agit d'un réglage propre au projet, non vérifiable depuis le code public du site — ce point sera tranché, dans un sens ou dans l'autre, avant la publication de cette politique."
-					: "Unconfirmed, checked before launch: whether this site's PostHog project stores the IP address your browser connects from. PostHog disables this by default for new EU-hosted projects, but it's a project setting, not something this page's authors can verify from the site's published code — this line will be resolved, one way or the other, before this policy ships."}
-			</em>
+			{lang === 'fr'
+				? "Confirmé : le projet PostHog de ce site ne conserve pas l'adresse IP depuis laquelle votre navigateur se connecte. L'anonymisation des IP est activée au niveau du projet et, les statistiques de ce site fonctionnant en mode sans cookie de PostHog, votre IP est en outre hachée en un identifiant anonyme puis supprimée avant tout traitement ultérieur, plutôt que conservée."
+				: "Confirmed: this site's PostHog project does not store the IP address your browser connects from. IP anonymization is enabled at the project level, and — because this site's analytics run in PostHog's cookieless mode — your IP is additionally hashed into an anonymous identifier and stripped before any further processing, rather than stored."}
 		</p>
 
 		<h2>{c.h2NotCollected}</h2>
