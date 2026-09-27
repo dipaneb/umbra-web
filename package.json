@@ -9,10 +9,14 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "perf:budget": "astro build && lhci autorun"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
     "astro": "^7.3.2"
+  },
+  "devDependencies": {
+    "@lhci/cli": "^0.15.1"
   }
 }

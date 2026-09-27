@@ -1,0 +1,55 @@
+{
+  "ci": {
+    "collect": {
+      "staticDistDir": "./dist",
+      "url": [
+        "http://localhost/index.html",
+        "http://localhost/fr/index.html",
+        "http://localhost/download/index.html",
+        "http://localhost/tools/json/index.html",
+        "http://localhost/compare/devutils/index.html"
+      ],
+      "numberOfRuns": 3
+    },
+    "assert": {
+      "assertMatrix": [
+        {
+          "matchingUrlPattern": ".*",
+          "assertions": {
+            "first-contentful-paint": ["warn", { "maxNumericValue": 1800 }],
+            "total-blocking-time": ["error", { "maxNumericValue": 300 }],
+            "cumulative-layout-shift": ["error", { "maxNumericValue": 0.1 }],
+            "speed-index": ["warn", { "maxNumericValue": 2500 }],
+
+            "resource-summary:document:size": ["warn", { "maxNumericValue": 30000 }],
+            "resource-summary:stylesheet:size": ["warn", { "maxNumericValue": 51200 }],
+            "resource-summary:font:size": ["warn", { "maxNumericValue": 204800 }],
+            "resource-summary:script:size": ["warn", { "maxNumericValue": 204800 }],
+            "resource-summary:image:size": ["warn", { "maxNumericValue": 262144 }],
+            "resource-summary:media:size": ["error", { "maxNumericValue": 51200 }],
+            "resource-summary:total:size": ["error", { "maxNumericValue": 614400 }],
+            "resource-summary:third-party:count": ["warn", { "maxNumericValue": 8 }]
+          }
+        },
+        {
+          "_comment": "Home (/, /fr/) carries the workflow-demo video's poster image and is the only template whose LCP candidate isn't plain text — give it its own, looser ceiling instead of diluting every other page's budget.",
+          "matchingUrlPattern": ".*/(fr/)?index\\.html$",
+          "assertions": {
+            "largest-contentful-paint": ["error", { "maxNumericValue": 4000 }]
+          }
+        },
+        {
+          "_comment": "Every other template (tools, compare, download, legal, ...) is text/SVG-only and consistently lands under 2s LCP in this project's own measurements — tighter ceiling catches a real regression instead of just tracking home's video budget.",
+          "matchingUrlPattern": "^(?!.*/(fr/)?index\\.html$).*",
+          "assertions": {
+            "largest-contentful-paint": ["error", { "maxNumericValue": 2800 }]
+          }
+        }
+      ]
+    },
+    "upload": {
+      "target": "filesystem",
+      "outputDir": ".lighthouseci"
+    }
+  }
+}

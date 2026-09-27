@@ -1,6 +1,9 @@
 # build output
 dist/
 
+# Lighthouse CI reports (Step 6.10 — pnpm run perf:budget)
+.lighthouseci/
+
 # generated types
 .astro/
 
