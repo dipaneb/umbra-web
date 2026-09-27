@@ -1,0 +1,28 @@
+{
+	"name": "Images",
+	"order": 9,
+	"icon": "IMG",
+	"searchTerms": "image images convertir compresser redimensionner png jpeg webp avif",
+	"hubBlurb": "Convertir, redimensionner et compresser des PNG, JPEG, WebP et AVIF.",
+	"tileDescription": "Convertissez, redimensionnez et compressez.",
+	"seoTitle": "Convertisseur d'images (PNG, JPEG, WebP, AVIF)",
+	"seoDescription": "Convertissez, redimensionnez et compressez des images PNG, JPEG, WebP et AVIF hors ligne, avec comparaison avant/après.",
+	"directAnswer": "L'outil Images d'Umbra convertit, redimensionne et compresse des fichiers PNG, JPEG, WebP et AVIF — entièrement hors ligne.",
+	"body": "Déposez une ou plusieurs images pour les convertir vers le format cible, les redimensionner en conservant les proportions, et ajuster la qualité grâce à une comparaison avant/après en direct — y compris une couleur de fond pour les formats sans transparence. Les conversions par lot affichent la progression fichier par fichier, pas un simple indicateur global.",
+	"screenshotSlug": "images",
+	"screenshotAlt": "L'outil Images d'Umbra convertissant un fichier en AVIF, montrant la réduction de taille par rapport à l'original.",
+	"faqs": [
+		{
+			"q": "Pourquoi ne pas convertir des images avec un convertisseur gratuit en ligne ?",
+			"a": "Une image peut porter autant d'informations personnelles qu'un document ; la téléverser juste pour changer une extension de fichier revient à confier tout cela à un serveur."
+		},
+		{
+			"q": "Puis-je convertir plusieurs images à la fois ?",
+			"a": "Oui — déposez-en autant que vous voulez ; la progression de chaque fichier est affichée individuellement."
+		},
+		{
+			"q": "Peut-il convertir des images en AVIF ou WebP, pas seulement en PNG et JPEG ?",
+			"a": "Oui — DevUtils n'a pas de convertisseur d'images généraliste, et l'outil de DevToys est aujourd'hui limité à PNG/JPEG (le support AVIF/WebP est une demande de fonctionnalité encore ouverte à ce jour). Umbra convertit dès aujourd'hui vers PNG, JPEG, WebP ou AVIF."
+		}
+	]
+}

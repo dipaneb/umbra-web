@@ -1,0 +1,28 @@
+{
+	"name": "JSON",
+	"order": 1,
+	"icon": "{ }",
+	"searchTerms": "json format formateur validateur réparer",
+	"hubBlurb": "Formater, valider, explorer, comparer et réparer du JSON.",
+	"tileDescription": "Formatez, validez et explorez du JSON sous forme d'arbre repliable.",
+	"seoTitle": "Formateur et validateur JSON — Hors ligne",
+	"seoDescription": "Formatez, validez, explorez, comparez et réparez du JSON entièrement hors ligne. Aucune donnée ne quitte votre machine.",
+	"directAnswer": "L'outil JSON d'Umbra formate, valide et explore du JSON entièrement hors ligne — rien de ce que vous y collez n'est jamais envoyé où que ce soit.",
+	"body": "Collez n'importe quel JSON pour le formater avec l'indentation de votre choix, ou le minifier en une seule ligne. Explorez le résultat sous forme d'arbre repliable avec recherche, exécutez une requête JSONPath, comparez deux documents côte à côte, ou générez l'interface TypeScript correspondante — sans que la donnée ne quitte jamais votre machine.",
+	"screenshotSlug": "json",
+	"screenshotAlt": "L'outil JSON d'Umbra affichant une charge utile dans la vue arborescente et consultable de l'onglet Explorer.",
+	"faqs": [
+		{
+			"q": "Pourquoi ne pas simplement utiliser un formateur JSON gratuit en ligne ?",
+			"a": "Parce que coller une donnée dans un outil web signifie qu'elle a quitté votre machine, ne serait-ce qu'un instant — et vous n'avez aucun moyen de vérifier ce que ce serveur en a fait. L'outil JSON d'Umbra n'envoie jamais rien nulle part."
+		},
+		{
+			"q": "Peut-il corriger du JSON invalide, pas seulement le signaler ?",
+			"a": "Oui — l'onglet Réparer propose des corrections pour les erreurs courantes et affiche un aperçu avant de les appliquer ; si un document est trop abîmé pour être corrigé automatiquement, l'outil le dit plutôt que de deviner."
+		},
+		{
+			"q": "Existe-t-il un formateur JSON qui corrige le JSON invalide, pas seulement qui le formate ?",
+			"a": "La plupart des formateurs JSON gratuits — y compris ceux de DevUtils et DevToys — valident et signalent une erreur, sans proposer de la corriger. L'onglet Réparer d'Umbra propose des corrections pour les erreurs courantes (une virgule manquante, une clé non guillemetée) et affiche un aperçu avant de les appliquer."
+		}
+	]
+}

@@ -1,0 +1,28 @@
+{
+	"name": "Hash",
+	"order": 4,
+	"icon": "#",
+	"searchTerms": "hash checksum sha256 sha512 sha3 md5 sha1 empreinte hachage",
+	"hubBlurb": "Calculer des empreintes SHA-2, SHA-3, MD5 et SHA-1 d'un texte ou d'un fichier.",
+	"tileDescription": "Empreintes SHA-2, SHA-3, MD5 et SHA-1 d'un texte ou d'un fichier.",
+	"seoTitle": "Générateur de hachage — SHA-2, SHA-3, MD5, SHA-1",
+	"seoDescription": "Calculez des empreintes SHA-2, SHA-3, MD5 ou SHA-1 de texte ou de fichiers hors ligne. Les algorithmes faibles sont signalés.",
+	"directAnswer": "L'outil Hash d'Umbra calcule les empreintes SHA-2, SHA-3, MD5 et SHA-1 — les mêmes sommes de contrôle qui servent généralement à vérifier l'intégrité d'un fichier — d'un texte ou d'un fichier, entièrement hors ligne.",
+	"body": "Tapez ou collez du texte, ou déposez un fichier n'importe où dans la fenêtre, et obtenez son empreinte pour tous les algorithmes pris en charge à la fois, dans la casse de votre choix. Les algorithmes plus faibles (MD5, SHA-1) sont signalés comme tels, pas présentés comme tout aussi sûrs.",
+	"screenshotSlug": "hash",
+	"screenshotAlt": "L'outil Hash d'Umbra affichant les empreintes SHA-256, SHA3-256, SHA3-512, MD5 et SHA-1 d'un texte, encodées en Base64.",
+	"faqs": [
+		{
+			"q": "Pourquoi ne pas hacher un fichier avec un outil gratuit en ligne ?",
+			"a": "Cela revient à téléverser le fichier pour vérifier sa propre empreinte — exactement l'exposition que le hachage sert souvent à éviter. Umbra hache localement, fichiers compris."
+		},
+		{
+			"q": "Quel algorithme utiliser ?",
+			"a": "SHA-2 ou SHA-3 pour tout ce qui touche à la sécurité ; MD5 et SHA-1 sont inclus pour la compatibilité, signalés comme faibles plutôt que listés sans commentaire."
+		},
+		{
+			"q": "Peut-il me dire si un fichier correspond à une empreinte publiée, pas seulement la calculer ?",
+			"a": "Oui — collez l'empreinte attendue dans Vérifier et Umbra indique une correspondance ou non pour chaque algorithme sélectionné ; si vous collez par erreur une valeur ressemblant à une empreinte dans le champ principal, l'outil propose de la déplacer vers Vérifier."
+		}
+	]
+}

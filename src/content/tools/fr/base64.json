@@ -1,0 +1,28 @@
+{
+	"name": "Base64",
+	"order": 2,
+	"icon": "64",
+	"searchTerms": "base64 b64 décoder décodeur encoder encodeur",
+	"hubBlurb": "Encoder et décoder du texte ou des fichiers, glisser-déposer inclus.",
+	"tileDescription": "Encoder et décoder du texte ou des fichiers.",
+	"seoTitle": "Encodeur et décodeur Base64 — Hors ligne",
+	"seoDescription": "Encodez ou décodez du texte et des fichiers en Base64 entièrement hors ligne. Rien de ce que vous déposez ne quitte votre machine.",
+	"directAnswer": "L'outil Base64 d'Umbra encode et décode du texte ou des fichiers entièrement hors ligne — rien de ce que vous déposez ou collez ne quitte jamais votre machine.",
+	"body": "Collez du texte pour l'encoder ou le décoder, avec une option d'alphabet compatible URL, ou déposez un fichier directement dans la fenêtre pour l'encoder en Base64. Le décodage reconnaît ce qu'il trouve — un JWT, une image, un binaire — et l'affiche en conséquence plutôt que d'afficher des octets bruts.",
+	"screenshotSlug": "base64",
+	"screenshotAlt": "L'outil Base64 d'Umbra encodant la valeur d'un en-tête, avec une zone de dépôt de fichiers au-dessus du champ de texte.",
+	"faqs": [
+		{
+			"q": "Pourquoi ne pas utiliser un décodeur Base64 gratuit en ligne ?",
+			"a": "Vous ne pouvez pas vérifier ce qu'un serveur fait de ce que vous lui envoyez ; Umbra décode et encode localement, fichiers déposés directement dans la fenêtre compris."
+		},
+		{
+			"q": "Détecte-t-il ce que j'ai décodé ?",
+			"a": "Oui — un JWT, une image, ou un format binaire reconnaissable est affiché en conséquence, pas comme de simples octets bruts."
+		},
+		{
+			"q": "Existe-t-il un décodeur Base64 qui identifie ce qu'il vient de décoder ?",
+			"a": "La plupart des outils Base64 gratuits séparent le décodage de texte et d'image en deux outils distincts — il faut donc déjà savoir lequel ouvrir. Umbra décode dans un seul outil et affiche ce qu'il a trouvé — un JWT, une image, ou un binaire non reconnu — plutôt que de vous laisser deviner."
+		}
+	]
+}

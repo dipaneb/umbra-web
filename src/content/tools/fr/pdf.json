@@ -1,0 +1,28 @@
+{
+	"name": "PDF",
+	"order": 8,
+	"icon": "PDF",
+	"searchTerms": "pdf fusionner diviser pivoter supprimer réorganiser",
+	"hubBlurb": "Fusionner, réorganiser, pivoter, supprimer et lire le texte de pages PDF.",
+	"tileDescription": "Fusionnez, extrayez ou lisez le texte.",
+	"seoTitle": "Fusionner et modifier un PDF — Hors ligne",
+	"seoDescription": "Fusionnez, réorganisez, pivotez et lisez le texte de pages PDF entièrement hors ligne.",
+	"directAnswer": "L'outil PDF d'Umbra fusionne, réorganise, pivote, supprime et lit le texte des pages PDF — entièrement hors ligne.",
+	"body": "Déposez un ou plusieurs PDF dans la fenêtre pour les fusionner dans l'ordre choisi, ou ouvrez-en un pour sélectionner, pivoter, supprimer ou réorganiser des pages avant d'enregistrer une copie. La lecture du texte d'un PDF scanné est signalée honnêtement : un scan est une image, pas du texte, donc il n'y a rien à en extraire directement.",
+	"screenshotSlug": "pdf",
+	"screenshotAlt": "L'outil PDF d'Umbra affichant de grands aperçus de pages d'un document de deux pages, avec les actions Lire le texte et Fusionner.",
+	"faqs": [
+		{
+			"q": "Pourquoi ne pas fusionner ou modifier un PDF avec un outil gratuit en ligne ?",
+			"a": "Un PDF est souvent exactement le type de document — un contrat, un scan de pièce d'identité — que l'on préfère ne pas voir transiter par un serveur tiers."
+		},
+		{
+			"q": "Peut-il lire le texte d'un PDF scanné ?",
+			"a": "Pas directement — une page scannée est une image, pas du texte ; l'OCR de l'outil <a href=\"/fr/tools/ocr/\">Image en texte</a> peut extraire le texte du scan lui-même."
+		},
+		{
+			"q": "Existe-t-il un outil gratuit pour fusionner, pivoter ou supprimer des pages PDF sans les téléverser nulle part ?",
+			"a": "Celui d'Umbra en fait partie — ni DevUtils, ni DevToys, ni CyberChef ne proposent d'outil PDF, et celui de DevTools-X n'est qu'une visionneuse. Umbra fusionne, réorganise, pivote, supprime et extrait des pages, sans jamais toucher au fichier sur le disque avant un enregistrement explicite."
+		}
+	]
+}

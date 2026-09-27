@@ -1,0 +1,191 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import { useTranslations, localizePath, type Lang } from '../i18n/utils';
+
+interface Props {
+	lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const tools = (await getCollection('tools', ({ id }) => id.startsWith(`${lang}/`))).sort(
+	(a, b) => a.data.order - b.data.order,
+);
+const compareIds = ['devtoys', 'devutils', 'devtools-x', 'cyberchef'];
+
+const copy = {
+	en: {
+		title: 'Tools',
+		description:
+			'Nine everyday developer tools — JSON, Base64, UUID, Hash, JWT, Cron, Image to Text, PDF, Images — in one offline app.',
+		lede: 'Nine everyday developer tools, bundled into one local app. Press ⌘K from anywhere in Umbra to jump straight to any of them.',
+		widerHeading: 'A wider comparison',
+		widerIntro:
+			"Not just the three named desktop competitors, but the two other categories the same decision usually comes down to. See the individual write-ups: ",
+		compareNames: ['DevToys', 'DevUtils', 'DevTools-X', 'CyberChef'],
+		tableHeaders: ['', 'Umbra', 'Web-based tools', 'Other desktop toolboxes'],
+		rows: [
+			[
+				'Where your data goes',
+				'Stays on your machine. One disclosed exception: an automatic check for app updates, at launch.',
+				"Sent to a server you don't control, even if only for a second.",
+				'Local, for the tools that are — check each one; "desktop" doesn\'t guarantee offline-only.',
+			],
+			[
+				'How you can verify that',
+				'A documented, repeatable network-monitor check you run yourself.',
+				"No way to verify — you're trusting the server operator.",
+				'States the claim in a sentence; no published verification mechanism found for DevToys, DevUtils, or DevTools-X as of 2026-09-19.',
+			],
+			[
+				'Works without an internet connection',
+				'Yes — a native app, no server dependency.',
+				"No — needs a live connection to the tool's own server.",
+				'Yes, once installed.',
+			],
+			['Cost', 'Free, no account.', 'Usually free, often ad-supported.', 'Free (DevToys, DevTools-X) or paid (DevUtils).'],
+			[
+				'Local AI feature',
+				'Yes — offline OCR (Image to Text), a bundled model, nothing uploaded.',
+				'N/A.',
+				'None found, across DevToys, DevUtils, or DevTools-X, as of 2026-09-19.',
+			],
+		],
+	},
+	fr: {
+		title: 'Outils',
+		description:
+			'Neuf outils du quotidien — JSON, Base64, UUID, Hash, JWT, Cron, Image en texte, PDF, Images — réunis dans une application hors ligne.',
+		lede: "Neuf outils du quotidien, réunis dans une seule application locale. Appuyez sur ⌘K depuis n'importe où dans Umbra pour accéder directement à l'un d'eux.",
+		widerHeading: 'Une comparaison plus large',
+		widerIntro:
+			'Pas seulement les trois concurrents de bureau nommés, mais les deux autres catégories auxquelles ce choix se ramène le plus souvent. Voir les comparatifs détaillés : ',
+		compareNames: ['DevToys', 'DevUtils', 'DevTools-X', 'CyberChef'],
+		tableHeaders: ['', 'Umbra', 'Outils web', 'Autres suites de bureau'],
+		rows: [
+			[
+				'Où vont vos données',
+				'Restent sur votre machine. Une exception assumée : la vérification automatique des mises à jour, au lancement.',
+				'Envoyées à un serveur que vous ne contrôlez pas, ne serait-ce que brièvement.',
+				'Locales, pour les outils qui le sont — à vérifier au cas par cas ; « de bureau » ne garantit pas le hors ligne.',
+			],
+			[
+				'Comment le vérifier',
+				'Un contrôle réseau documenté et reproductible, que vous exécutez vous-même.',
+				"Aucun moyen de vérifier — vous faites confiance à l'opérateur du serveur.",
+				'Affirmé en une phrase ; aucun mécanisme de vérification publié trouvé pour DevToys, DevUtils ou DevTools-X au 19/09/2026.',
+			],
+			[
+				'Fonctionne sans connexion internet',
+				'Oui — une application native, sans dépendance à un serveur.',
+				"Non — nécessite une connexion active au serveur de l'outil.",
+				'Oui, une fois installé.',
+			],
+			['Coût', 'Gratuit, sans compte.', 'Généralement gratuit, souvent financé par la publicité.', 'Gratuit (DevToys, DevTools-X) ou payant (DevUtils).'],
+			[
+				"Fonctionnalité d'IA locale",
+				"Oui — OCR hors ligne (Image en texte), modèle embarqué, rien n'est téléversé.",
+				'Non applicable.',
+				'Aucune trouvée, chez DevToys, DevUtils ou DevTools-X, au 19/09/2026.',
+			],
+		],
+	},
+} as const;
+
+const c = copy[lang];
+---
+
+<Layout title={c.title} description={c.description}>
+	<section class="section container tools-hub">
+		<h1>{c.title}</h1>
+		<p class="page-lede">{c.lede}</p>
+
+		<ul class="card-grid">
+			{
+				tools.map((tool) => {
+					const slug = tool.id.replace(`${lang}/`, '');
+					return (
+						<li class="card">
+							<a class="card-link" href={localizePath(`/tools/${slug}/`, lang)}>
+								<span class="tool-icon" aria-hidden="true">
+									{tool.data.icon}
+								</span>
+								<h3>{tool.data.name}</h3>
+								<p>{tool.data.hubBlurb}</p>
+							</a>
+						</li>
+					);
+				})
+			}
+		</ul>
+
+		<div class="prose wider-comparison">
+			<h2>{c.widerHeading}</h2>
+			<p class="section-lede" style="text-align: left; margin-left: 0;">
+				{c.widerIntro}
+				{
+					compareIds.map((slug, i) => (
+						<>
+							<a href={localizePath(`/compare/${slug}/`, lang)}>{c.compareNames[i]}</a>
+							{i < compareIds.length - 1 ? ', ' : '.'}
+						</>
+					))
+				}
+			</p>
+			<table class="compare-table">
+				<thead>
+					<tr>
+						{c.tableHeaders.map((h) => <th scope="col">{h}</th>)}
+					</tr>
+				</thead>
+				<tbody>
+					{
+						c.rows.map((row) => (
+							<tr>
+								<th scope="row">{row[0]}</th>
+								<td>{row[1]}</td>
+								<td>{row[2]}</td>
+								<td>{row[3]}</td>
+							</tr>
+						))
+					}
+				</tbody>
+			</table>
+		</div>
+	</section>
+</Layout>
+
+<style>
+	.tools-hub {
+		max-width: var(--max-width);
+	}
+
+	.page-lede {
+		max-width: 40rem;
+	}
+
+	.tool-icon {
+		display: inline-block;
+		font-family: var(--font-mono);
+		font-size: var(--type-caption);
+		font-weight: 700;
+		letter-spacing: 0.03em;
+		background: var(--bg-base);
+		border: 1px solid var(--border-hairline);
+		border-radius: var(--radius-sm);
+		padding: 0.2rem 0.5rem;
+		margin-bottom: var(--space-3);
+	}
+
+	.wider-comparison {
+		margin-top: var(--space-16);
+		max-width: 100%;
+	}
+
+	.wider-comparison .compare-table td,
+	.wider-comparison .compare-table th {
+		font-size: 0.92rem;
+	}
+</style>

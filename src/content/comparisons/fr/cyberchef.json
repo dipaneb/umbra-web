@@ -1,0 +1,37 @@
+{
+	"competitorName": "CyberChef",
+	"order": 4,
+	"dateChecked": "2026-09-19",
+	"seoTitle": "Umbra vs. CyberChef — Comparatif",
+	"seoDescription": "Comment la boîte à outils native d'Umbra se compare à CyberChef, l'outil web du GCHQ.",
+	"intro": "CyberChef est différent par nature, pas seulement par ses fonctionnalités — un outil web du GCHQ (Royaume-Uni), pas une application native. Voici comment les deux se comparent, vérifié le 19/09/2026.",
+	"rows": [
+		{ "label": "Prix", "umbra": "Gratuit, sans compte", "competitor": "Gratuit" },
+		{
+			"label": "Plateformes",
+			"umbra": "Application native : macOS (signé, notarisé), Windows et Linux (best-effort)",
+			"competitor": "S'exécute dans n'importe quel navigateur ; un ZIP hors ligne téléchargeable existe mais ne se met pas à jour automatiquement"
+		},
+		{
+			"label": "Outils",
+			"umbra": "9, conçus pour un usage précis (JSON, JWT, hachage, OCR, PDF, images…)",
+			"competitor": "Des centaines d'opérations, plutôt orientées encodage/chiffrement/analyse de données que tâches quotidiennes de développement"
+		},
+		{
+			"label": "Source",
+			"umbra": "Source-available (public, tous droits réservés)",
+			"competitor": "Open source (Apache 2.0, Crown Copyright)"
+		},
+		{
+			"label": "Vérification de la confidentialité",
+			"umbra": "Un contrôle réseau documenté et reproductible, à exécuter vous-même",
+			"competitor": "S'exécute entièrement côté client pour la plupart des opérations — une architecture de confidentialité réellement vérifiable en soi ; trois opérations (tuiles cartographiques, requêtes DNS, une opération de requête HTTP) sortent vers le réseau par conception, selon sa propre documentation"
+		},
+		{
+			"label": "Fonctionnalité d'IA locale",
+			"umbra": "Oui — OCR hors ligne (Image en texte)",
+			"competitor": "Aucune trouvée au 19/09/2026"
+		}
+	],
+	"verdict": "CyberChef n'est pas vraiment un concurrent au sens d'une boîte à outils du quotidien — c'est un outil bien plus large, orienté encodage/chiffrement/analyse forensique, qui s'exécute aussi entièrement dans le navigateur, sans serveur pour la plupart de ses opérations — une architecture de confidentialité réellement vérifiable en soi. Une poignée de ses opérations sortent vers le réseau par conception, documentées comme telles — la même discipline qu'Umbra applique à sa propre vérification de mise à jour. Umbra est une application native conçue pour le plus petit ensemble d'outils qu'un développeur utilise au quotidien, avec un flux de travail à un seul raccourci que le format navigateur de CyberChef n'offre pas."
+}

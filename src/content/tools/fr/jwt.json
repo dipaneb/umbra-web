@@ -1,0 +1,27 @@
+{
+	"name": "JWT",
+	"order": 5,
+	"icon": "JWT",
+	"searchTerms": "jwt token décoder jeton",
+	"hubBlurb": "Décoder l'en-tête et la charge utile d'un jeton — lit, ne vérifie pas.",
+	"seoTitle": "Décodeur JWT — Hors ligne, sans serveur",
+	"seoDescription": "Décodez l'en-tête et la charge utile d'un JWT entièrement hors ligne — sans jamais l'envoyer, et sans vérification de signature.",
+	"directAnswer": "L'outil JWT d'Umbra décode l'en-tête et la charge utile d'un jeton entièrement hors ligne — il ne l'envoie jamais nulle part, et ne vérifie pas les signatures.",
+	"body": "Collez un jeton pour voir son en-tête et sa charge utile clairement présentés, avec les revendications d'expiration traduites en langage clair (« expire dans 3 jours », pas un horodatage brut). L'outil lit le jeton ; il ne vérifie pas s'il est authentique — précisé clairement dans l'outil lui-même.",
+	"screenshotSlug": "jwt",
+	"screenshotAlt": "L'outil JWT d'Umbra affichant l'en-tête et la charge utile décodés d'un jeton.",
+	"faqs": [
+		{
+			"q": "Pourquoi ne pas décoder un JWT avec un outil gratuit en ligne ?",
+			"a": "Un JWT transporte souvent de vraies données de session ou d'identité — Umbra le décode entièrement sur votre machine et ne le transmet jamais."
+		},
+		{
+			"q": "Vérifie-t-il la signature ?",
+			"a": "Non, et l'outil le précise — la vérification nécessiterait la clé de signature, que l'outil ne demande jamais."
+		},
+		{
+			"q": "Peut-il m'avertir si un jeton n'est pas signé ?",
+			"a": "Oui — Umbra signale un jeton non signé ou utilisant un algorithme illisible, ce qui signifie que n'importe qui aurait pu le créer ou le modifier, avant même que vous lisiez le reste de la page."
+		}
+	]
+}

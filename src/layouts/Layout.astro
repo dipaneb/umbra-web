@@ -1,5 +1,7 @@
 ---
 import { Font } from 'astro:assets';
+import { getLangFromUrl, useTranslations, localizePath, delocalizePath } from '../i18n/utils';
+import { languages } from '../i18n/ui';
 
 interface Props {
 	title?: string;
@@ -18,19 +20,67 @@ const {
 	noindex = false,
 	rawTitle = false,
 } = Astro.props;
+
+// Step 6.5 — `Astro.currentLocale` works even for static prerendered pages
+// (Context7-verified, `/withastro/docs`), but this project detects from the
+// URL directly via the shared `getLangFromUrl` helper so Layout, pages, and
+// the language switcher all agree on exactly one source of truth.
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const isProd = import.meta.env.PROD;
-const isHome = Astro.url.pathname === '/';
+const isHome = Astro.url.pathname === '/' || Astro.url.pathname === '/fr/';
 // Home is the brand — `Umbra — {value}`; every other page is `{value} — Umbra` (landing-copy.md §7).
 const pageTitle = rawTitle ? title : isHome ? `Umbra — ${title}` : `${title} — Umbra`;
 
 const isCurrent = (href: string) => Astro.url.pathname === href || Astro.url.pathname === `${href}/`;
+
+// Each locale's own page is self-canonical (never cross-language) — the EN
+// and FR versions of a page are different content, not duplicates
+// (landing-copy.md §7 Part 6). `hreflang` alternates point at the sibling
+// locale's copy of *this same page*, computed generically from the `/fr`
+// prefix rather than a per-page lookup table, since no route is
+// slug-translated.
+const enPath = delocalizePath(Astro.url.pathname);
+const frPath = localizePath(enPath, 'fr');
+const enHref = new URL(enPath, Astro.site).toString();
+const frHref = new URL(frPath, Astro.site).toString();
+const langSwitchHref = lang === 'en' ? frPath : enPath;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
 	<head>
 		<meta charset="utf-8" />
+		<!--
+			Client-side root redirect (Step 6.5 follow-up) — this site is fully
+			static (no adapter, no on-demand rendering), so Astro's own
+			`Astro.preferredLocale`/`preferredLocaleList` aren't available here;
+			those need a page rendered on demand (Context7-verified,
+			/withastro/docs), which this project deliberately isn't. This inline
+			script is the cheap alternative: only on the bare English home page,
+			only for a visitor who has never used the language switcher, redirect
+			once to /fr/ if their browser's first-preference language is French.
+			`location.replace` (not a normal navigation) so it doesn't leave an
+			English-home entry in browser history. Placed as early as possible in
+			<head>, before any other tag, to minimize the flash of English
+			content for a French-preferring visitor.
+		-->
+		{isHome && lang === 'en' && (
+			<script is:inline>
+				(function () {
+					try {
+						if (localStorage.getItem('umbra-lang-manual')) return;
+						var lang = (navigator.languages && navigator.languages[0]) || navigator.language || '';
+						if (/^fr\b/i.test(lang)) location.replace('/fr/');
+					} catch (e) {
+						// localStorage unavailable (private mode, disabled) — fail open,
+						// stay on the default English page rather than error.
+					}
+				})();
+			</script>
+		)}
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -40,6 +90,9 @@ const isCurrent = (href: string) => Astro.url.pathname === href || Astro.url.pat
 		<title>{pageTitle}</title>
 		<meta name="description" content={description} />
 		<link rel="canonical" href={canonicalURL} />
+		<link rel="alternate" hreflang="en" href={enHref} />
+		<link rel="alternate" hreflang="fr" href={frHref} />
+		<link rel="alternate" hreflang="x-default" href={enHref} />
 		{noindex && <meta name="robots" content="noindex, follow" />}
 
 		<meta property="og:type" content="website" />
@@ -123,28 +176,36 @@ const isCurrent = (href: string) => Astro.url.pathname === href || Astro.url.pat
 	</head>
 	<body>
 		<header class="site-header">
-			<nav class="site-nav" aria-label="Primary">
-				<a class="brand" href="/">
+			<nav class="site-nav" aria-label={t('nav.aria')}>
+				<a class="brand" href={localizePath('/', lang)}>
 					<img class="brand-mark" src="/favicon.svg" width="24" height="24" alt="" />
 					Umbra
 				</a>
 				<input type="checkbox" id="nav-toggle" class="nav-toggle-input" aria-hidden="true" />
 				<ul class="nav-links">
-					<li><a href="/tools/" aria-current={isCurrent('/tools') ? 'page' : undefined}>Tools</a></li>
-					<li><a href="/faq/" aria-current={isCurrent('/faq') ? 'page' : undefined}>FAQ</a></li>
-					<li><a href="/about/" aria-current={isCurrent('/about') ? 'page' : undefined}>About</a></li>
+					<li><a href={localizePath('/tools/', lang)} aria-current={isCurrent(localizePath('/tools', lang)) ? 'page' : undefined}>{t('nav.tools')}</a></li>
+					<li><a href={localizePath('/faq/', lang)} aria-current={isCurrent(localizePath('/faq', lang)) ? 'page' : undefined}>{t('nav.faq')}</a></li>
+					<li><a href={localizePath('/about/', lang)} aria-current={isCurrent(localizePath('/about', lang)) ? 'page' : undefined}>{t('nav.about')}</a></li>
 				</ul>
 				<div class="nav-actions">
 					<a
 						id="nav-download-btn"
-						href="/download/"
+						href={localizePath('/download/', lang)}
 						class="cta"
-						aria-current={isCurrent('/download') ? 'page' : undefined}
+						aria-current={isCurrent(localizePath('/download', lang)) ? 'page' : undefined}
 						data-analytics="download_clicked"
 					>
-						Download
+						{t('nav.download')}
 					</a>
-					<label for="nav-toggle" class="nav-toggle-label" aria-label="Menu">
+					<!-- Language switcher (Step 6.5 / landing-copy.md §5) — labeled with the
+					     destination language, never a bare "EN"/"FR" abbreviation, and placed
+					     after Download so it doesn't compete with the page's one real CTA.
+					     Preserves the exact current page via `langSwitchHref`, never bounces
+					     to home. -->
+					<a href={langSwitchHref} class="lang-switch" hreflang={lang === 'en' ? 'fr' : 'en'}>
+						{languages[lang === 'en' ? 'fr' : 'en']}
+					</a>
+					<label for="nav-toggle" class="nav-toggle-label" aria-label={t('nav.menu')}>
 						<span></span><span></span><span></span>
 					</label>
 				</div>
@@ -157,31 +218,32 @@ const isCurrent = (href: string) => Astro.url.pathname === href || Astro.url.pat
 
 		<footer class="site-footer">
 			<img class="footer-mark" src="/favicon.svg" width="20" height="20" alt="" loading="lazy" decoding="async" />
-			<nav class="footer-links" aria-label="Footer">
-				<a href="/faq/">FAQ</a>
-				<a href="/privacy/">Privacy</a>
-				<a href="/legal/">Legal notice</a>
-				<a href="/eula/">EULA</a>
-				<a href="/changelog/">Changelog</a>
-				<a href="/about/">About</a>
+			<nav class="footer-links" aria-label={t('footer.aria')}>
+				<a href={localizePath('/faq/', lang)}>{t('footer.faq')}</a>
+				<a href={localizePath('/privacy/', lang)}>{t('footer.privacy')}</a>
+				<a href={localizePath('/legal/', lang)}>{t('footer.legal')}</a>
+				<a href={localizePath('/eula/', lang)}>{t('footer.eula')}</a>
+				<a href={localizePath('/changelog/', lang)}>{t('footer.changelog')}</a>
+				<a href={localizePath('/about/', lang)}>{t('footer.about')}</a>
 			</nav>
 			<p class="footer-compare">
-				Compare: <a href="/compare/devtoys/">DevToys</a> · <a href="/compare/devutils/">DevUtils</a> ·{' '}
-				<a href="/compare/devtools-x/">DevTools-X</a> · <a href="/compare/cyberchef/">CyberChef</a>
+				{t('footer.compareLabel')} <a href={localizePath('/compare/devtoys/', lang)}>DevToys</a> ·{' '}
+				<a href={localizePath('/compare/devutils/', lang)}>DevUtils</a> ·{' '}
+				<a href={localizePath('/compare/devtools-x/', lang)}>DevTools-X</a> ·{' '}
+				<a href={localizePath('/compare/cyberchef/', lang)}>CyberChef</a>
 			</p>
 			<!-- TODO(developer): real name — CLAUDE.md's privacy rule blocks committing one here;
 			     see landing-copy.md §4 "About" section for the intended wording. -->
-			<p>Hey — I'm the developer, the one person building and maintaining Umbra.</p>
+			<p>{t('footer.attribution')}</p>
+			<p>{t('footer.analytics')}</p>
+			<p set:html={t('footer.licence').replace('{eula}', `<a href="${localizePath('/eula/', lang)}">${t('footer.eula')}</a>`)} />
+			<p set:html={t('footer.watch').replace('{watchLink}', `<a href="https://github.com/dipaneb/umbra" data-analytics="notify_me_clicked">${t('footer.watchLinkText')}</a>`)} />
 			<p>
-				Umbra collects anonymous page-view and download-intent analytics only. No cookies, no session
-				recording.
+				<a href={langSwitchHref} class="lang-switch" hreflang={lang === 'en' ? 'fr' : 'en'}>
+					{languages[lang === 'en' ? 'fr' : 'en']}
+				</a>
 			</p>
-			<p>Source-available, not open source. See the <a href="/eula/">EULA</a>.</p>
-			<p>
-				<a href="https://github.com/dipaneb/umbra" data-analytics="notify_me_clicked">Watch on GitHub</a>{' '}
-				to get notified about new releases.
-			</p>
-			<p class="footer-copyright">© 2026 Umbra.</p>
+			<p class="footer-copyright">{t('footer.copyright')}</p>
 		</footer>
 
 		<!--
@@ -218,6 +280,21 @@ const isCurrent = (href: string) => Astro.url.pathname === href || Astro.url.pat
 					props.platform = guessPlatform();
 				}
 				window.posthog.capture(el.dataset.analytics, props);
+			});
+
+			// Marks an explicit language choice (either direction) so the root
+			// redirect script above never overrides it — a visitor who
+			// deliberately picked a language should never be bounced back by
+			// browser-language inference, on this visit or a future one.
+			document.addEventListener('click', function (event) {
+				if (event.target.closest('.lang-switch')) {
+					try {
+						localStorage.setItem('umbra-lang-manual', '1');
+					} catch (e) {
+						// localStorage unavailable — the switch itself still works via
+						// normal navigation, only the "don't auto-redirect later" memory is lost.
+					}
+				}
 			});
 		</script>
 	</body>
@@ -713,6 +790,18 @@ const isCurrent = (href: string) => Astro.url.pathname === href || Astro.url.pat
 		display: flex;
 		align-items: center;
 		gap: var(--space-4);
+	}
+
+	/* Language switcher — after Download, low visual weight on purpose
+	   (landing-copy.md §5: a utility control, not a second CTA). */
+	.lang-switch {
+		font-size: var(--type-caption);
+		color: var(--text-secondary);
+		text-decoration: none;
+	}
+
+	.lang-switch:hover {
+		color: var(--text-primary);
 	}
 
 	/* Mobile nav — a checkbox-driven collapsible panel (landing-design.md §2's

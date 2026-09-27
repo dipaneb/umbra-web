@@ -1,0 +1,159 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { localizePath, type Lang } from '../i18n/utils';
+
+interface Props {
+	lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+const copy = {
+	en: {
+		seoTitle: 'End User License Agreement',
+		seoDescription:
+			'The terms for using the downloaded Umbra binary: personal use, no redistribution, no reverse engineering, as-is.',
+		h1: 'End User License Agreement',
+		lastUpdated: 'Last updated:',
+		toBeSet: 'to be set at launch.',
+		clauses: [
+			{
+				h2: '1. License grant',
+				body: 'The copyright holder grants you a personal, non-exclusive, non-transferable, revocable licence to install and run Umbra, free of charge, for your own personal use.',
+			},
+			{
+				h2: '2. No redistribution',
+				body: "You may not redistribute, sell, rent, lease, sublicense, host for others' use, or otherwise make Umbra — modified or unmodified — available to any third party. If someone else wants Umbra, point them to the official download page, not a copy of the installer.",
+			},
+			{ h2: '3. No reverse engineering or modification', body: null },
+			{
+				h2: '4. "As-is," no warranty',
+				body: 'Umbra is provided "as is," without warranty of any kind, express or implied, including but not limited to warranties of merchantability, fitness for a particular purpose, and non-infringement. You use it at your own risk.',
+			},
+			{
+				h2: '5. Limitation of liability',
+				body: 'To the maximum extent permitted by law, the copyright holder is not liable for any damages arising from your use of, or inability to use, Umbra — including data loss, business interruption, or any other direct or indirect damages — even if advised of the possibility of such damages.',
+			},
+			{
+				h2: '6. Termination',
+				body: 'This licence ends automatically if you breach any of these terms. On termination, you must stop using Umbra and delete any copies you have.',
+			},
+		],
+		h2Contact: '7. Contact',
+		contactPending: 'Contact details to be added.',
+	},
+	fr: {
+		seoTitle: 'Contrat de licence utilisateur final',
+		seoDescription:
+			'Les conditions d’utilisation du binaire Umbra téléchargé : usage personnel, sans redistribution, sans ingénierie inverse.',
+		h1: 'Contrat de licence utilisateur final',
+		lastUpdated: 'Dernière mise à jour :',
+		toBeSet: 'à définir au lancement.',
+		clauses: [
+			{
+				h2: '1. Concession de licence',
+				body: "Le titulaire des droits vous concède une licence personnelle, non exclusive, incessible et révocable, pour installer et exécuter Umbra, gratuitement, pour votre usage personnel.",
+			},
+			{
+				h2: '2. Pas de redistribution',
+				body: "Vous ne pouvez pas redistribuer, vendre, louer, sous-licencier, héberger pour l'usage d'un tiers, ou rendre autrement disponible Umbra — modifié ou non — à un tiers. Si quelqu'un d'autre souhaite Umbra, orientez-le vers la page de téléchargement officielle, pas vers une copie de l'installeur.",
+			},
+			{ h2: "3. Pas d'ingénierie inverse ni de modification", body: null },
+			{
+				h2: '4. Fourni « en l’état », sans garantie',
+				body: "Umbra est fourni « en l'état », sans garantie d'aucune sorte, expresse ou implicite, y compris, sans s'y limiter, les garanties de qualité marchande, d'adéquation à un usage particulier et d'absence de contrefaçon. Vous l'utilisez à vos propres risques.",
+			},
+			{
+				h2: '5. Limitation de responsabilité',
+				body: "Dans toute la mesure permise par la loi, le titulaire des droits ne peut être tenu responsable des dommages résultant de votre utilisation d'Umbra, ou de votre incapacité à l'utiliser — y compris la perte de données, l'interruption d'activité, ou tout autre dommage direct ou indirect — même s'il a été informé de la possibilité de tels dommages.",
+			},
+			{
+				h2: '6. Résiliation',
+				body: "Cette licence prend fin automatiquement en cas de manquement à l'une de ces conditions. En cas de résiliation, vous devez cesser d'utiliser Umbra et supprimer toute copie en votre possession.",
+			},
+		],
+		h2Contact: '7. Contact',
+		contactPending: 'Coordonnées à renseigner.',
+	},
+} as const;
+
+const c = copy[lang];
+const legalHref = localizePath('/legal/', lang);
+---
+
+<Layout title={c.seoTitle} description={c.seoDescription}>
+	<section class="section container prose legal-page">
+		<h1>{c.h1}</h1>
+		<p class="page-lede">{c.lastUpdated} <!-- TODO(developer): set at launch --> {c.toBeSet}</p>
+
+		{
+			lang === 'fr' ? (
+				<p>
+					Ce contrat ne couvre que l'application Umbra compilée que vous téléchargez et exécutez —
+					pas le code source. Le code source d'Umbra est public et consultable, mais n'est concédé
+					sous aucune licence de réutilisation ; voir le fichier <code>LICENSE</code> du dépôt et
+					les <a href={legalHref}>mentions légales</a> pour cette question distincte. En
+					téléchargeant, installant ou exécutant Umbra, vous acceptez les conditions ci-dessous.
+				</p>
+			) : (
+				<p>
+					This agreement covers only the compiled Umbra application you download and run — not the
+					source code. Umbra's source code is public and readable, but it is not licensed for reuse
+					in any form; see the repository's <code>LICENSE</code> file and the{' '}
+					<a href={legalHref}>Legal notice</a> for that separate question. By downloading,
+					installing, or running Umbra, you agree to the terms below.
+				</p>
+			)
+		}
+
+		{
+			c.clauses.map((clause) =>
+				clause.body === null ? (
+					<>
+						<h2>{clause.h2}</h2>
+						{lang === 'fr' ? (
+							<p>
+								Vous ne pouvez pas effectuer d'ingénierie inverse, décompiler, désassembler, ou
+								tenter de quelque autre manière d'obtenir le code source à partir de l'application
+								compilée, et vous ne pouvez pas la modifier, la corriger (« patcher ») ou en créer
+								des œuvres dérivées. Cette clause concerne spécifiquement le binaire compilé ; le
+								code source lui-même est public séparément et régi par le <code>LICENSE</code> du
+								dépôt, qui n'accorde lui non plus aucun droit de réutilisation — voir les{' '}
+								<a href={legalHref}>mentions légales</a>.
+							</p>
+						) : (
+							<p>
+								You may not reverse engineer, decompile, disassemble, or otherwise attempt to
+								derive the source code from the compiled application, and you may not modify,
+								patch, or create derivative works from it. This clause concerns the compiled
+								binary specifically; the source code itself is separately public and governed by
+								the repository's own <code>LICENSE</code>, which grants no reuse rights either —
+								see the <a href={legalHref}>Legal notice</a>.
+							</p>
+						)}
+					</>
+				) : (
+					<>
+						<h2>{clause.h2}</h2>
+						<p>{clause.body}</p>
+					</>
+				),
+			)
+		}
+
+		<h2>{c.h2Contact}</h2>
+		<!-- TODO(developer): shared with /privacy and /legal's Contact sections. -->
+		<p>{c.contactPending}</p>
+	</section>
+</Layout>
+
+<style>
+	.legal-page {
+		max-width: 38rem;
+	}
+
+	.legal-page h1,
+	.legal-page h2 {
+		text-align: left;
+	}
+</style>

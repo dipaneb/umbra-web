@@ -1,0 +1,29 @@
+{
+	"name": "Image en texte",
+	"order": 7,
+	"icon": "OCR",
+	"aiClaim": true,
+	"searchTerms": "ocr image en texte capture d'écran reconnaissance",
+	"hubBlurb": "Extraire le texte d'une capture d'écran ou d'un scan grâce à un modèle d'IA embarqué.",
+	"tileDescription": "Extrayez le texte d'une capture ou d'un scan.",
+	"seoTitle": "Image en texte (OCR par IA locale)",
+	"seoDescription": "Extrayez le texte d'une capture, d'une photo ou d'un scan grâce à un modèle d'IA embarqué qui s'exécute sur votre machine.",
+	"directAnswer": "L'outil Image en texte d'Umbra extrait le texte d'une capture d'écran, d'une photo ou d'un scan à l'aide d'un modèle d'IA embarqué qui s'exécute entièrement sur votre machine — l'image n'en sort jamais, pas même pour ça.",
+	"body": "Déposez une image n'importe où dans la fenêtre, ou collez-en une avec ⌘V, et Umbra reconnaît et extrait son texte — sélectionnable directement sur l'image, ou copié en un geste. Si rien de lisible n'est trouvé, l'outil le dit clairement.",
+	"screenshotSlug": "ocr",
+	"screenshotAlt": "L'outil Image en texte d'Umbra affichant du texte reconnu, sélectionnable directement sur une image scannée.",
+	"faqs": [
+		{
+			"q": "Pourquoi ne pas utiliser un outil OCR gratuit en ligne ?",
+			"a": "Un outil OCR en ligne implique de téléverser votre image — captures d'écran et photos contiennent souvent exactement ce que vous voudriez le moins voir sur le serveur d'un inconnu. Le modèle d'Umbra est embarqué avec l'application ; rien n'est téléversé, même pour ça."
+		},
+		{
+			"q": "Est-ce la fonctionnalité IA mentionnée sur le site ?",
+			"a": "Oui — la seule à ce jour : un modèle d'OCR local, sans aucun appel réseau."
+		},
+		{
+			"q": "Puis-je sélectionner le texte directement sur une capture d'écran, pas seulement copier un bloc de texte ?",
+			"a": "Oui — le texte reconnu reste sélectionnable directement sur l'image elle-même, et vous pouvez y rechercher avec navigation entre les résultats, plutôt que de travailler depuis un simple bloc de texte qui a perdu sa mise en page."
+		}
+	]
+}

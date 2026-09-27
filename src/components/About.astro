@@ -1,0 +1,90 @@
+---
+import Layout from '../layouts/Layout.astro';
+import type { Lang } from '../i18n/utils';
+
+interface Props {
+	lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+const copy = {
+	en: {
+		seoTitle: 'About Umbra — Built by One Developer',
+		seoDescription:
+			"Umbra is built and maintained by a single developer. Here's what that means for speed, privacy, and testing.",
+		mission:
+			'Umbra is a small, local-first toolbox for the tools developers reach for every day — built to run entirely on your machine, with nothing else assumed.',
+		outcomes: [
+			{
+				lead: "It's fast because there's no browser bundled inside it.",
+				body: "A native Rust core drives the app directly — unlike an Electron-style app, it doesn't ship its own copy of Chromium — so it opens and responds like a small program should.",
+			},
+			{
+				lead: 'The Mac build is checked by Apple before you ever see it.',
+				body: 'Signed with a Developer ID certificate and notarized by Apple.',
+			},
+			{
+				lead: "Nothing you use it for is sent anywhere.",
+				body: 'The app makes no network calls except one, disclosed — the check for a new version — and you can confirm it yourself with a network monitor while it runs.',
+			},
+			{
+				lead: 'Windows and Linux are labeled honestly, not oversold.',
+				body: "They work, but they're tested less than the macOS build, and that's said plainly rather than implied otherwise.",
+			},
+		],
+	},
+	fr: {
+		seoTitle: 'À propos d’Umbra — Développé par une seule personne',
+		seoDescription:
+			"Umbra est développé et maintenu par une seule personne. Voici ce que cela signifie pour la rapidité, la confidentialité et les tests.",
+		mission:
+			'Umbra est une petite boîte à outils locale pour les outils que les développeurs utilisent au quotidien — conçue pour fonctionner entièrement sur votre machine, sans rien présupposer d’autre.',
+		outcomes: [
+			{
+				lead: "Il est rapide parce qu'aucun navigateur n'est embarqué à l'intérieur.",
+				body: "Un cœur natif en Rust fait tourner l'application directement — contrairement à une application de type Electron, elle n'embarque pas sa propre copie de Chromium — pour s'ouvrir et répondre comme un vrai petit programme.",
+			},
+			{
+				lead: 'La version macOS est vérifiée par Apple avant même que vous la voyiez.',
+				body: 'Signée avec un certificat Developer ID et notarisée par Apple.',
+			},
+			{
+				lead: "Rien de ce que vous en faites n'est envoyé où que ce soit.",
+				body: "Sauf pour une exception assumée — la vérification d'une nouvelle version — l'application ne fait aucun appel réseau, et vous pouvez le vérifier vous-même avec un moniteur réseau pendant qu'elle tourne.",
+			},
+			{
+				lead: 'Windows et Linux sont présentés honnêtement, sans enjoliver.',
+				body: 'Ils fonctionnent, mais sont moins testés que la version macOS, et cela est dit clairement plutôt que sous-entendu.',
+			},
+		],
+	},
+} as const;
+
+const c = copy[lang];
+---
+
+<Layout title={c.seoTitle} description={c.seoDescription} rawTitle>
+	<section class="section container prose about-page">
+		<h1>{c.mission}</h1>
+
+		{
+			c.outcomes.map((o) => (
+				<p>
+					<strong>{o.lead}</strong> {o.body}
+				</p>
+			))
+		}
+	</section>
+</Layout>
+
+<style>
+	.about-page {
+		max-width: 38rem;
+	}
+
+	.about-page h1 {
+		font-size: var(--type-h1);
+		margin-bottom: var(--space-10);
+	}
+</style>

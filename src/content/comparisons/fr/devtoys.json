@@ -1,0 +1,33 @@
+{
+	"competitorName": "DevToys",
+	"order": 1,
+	"dateChecked": "2026-09-19",
+	"seoTitle": "Umbra vs. DevToys — Comparatif",
+	"seoDescription": "Comment Umbra se compare à DevToys : prix, plateformes, outils, code source, vérification de la confidentialité.",
+	"intro": "DevToys est la comparaison gratuite et open source la plus proche d'Umbra. Voici comment les deux se comparent, vérifié le 19/09/2026.",
+	"rows": [
+		{ "label": "Prix", "umbra": "Gratuit, sans compte", "competitor": "Gratuit" },
+		{
+			"label": "Plateformes",
+			"umbra": "macOS (signé, notarisé), Windows et Linux (best-effort)",
+			"competitor": "Windows, macOS, Linux"
+		},
+		{ "label": "Outils", "umbra": "9", "competitor": "30 outils par défaut, plus des outils communautaires" },
+		{
+			"label": "Source",
+			"umbra": "Source-available (public, tous droits réservés)",
+			"competitor": "Open source (GitHub)"
+		},
+		{
+			"label": "Vérification de la confidentialité",
+			"umbra": "Un contrôle réseau documenté et reproductible, à exécuter vous-même",
+			"competitor": "Se dit « axé sur la confidentialité » ; aucun mécanisme de vérification publié trouvé au 19/09/2026"
+		},
+		{
+			"label": "Fonctionnalité d'IA locale",
+			"umbra": "Oui — OCR hors ligne (Image en texte)",
+			"competitor": "Aucune trouvée au 19/09/2026"
+		}
+	],
+	"verdict": "DevToys propose plus d'outils aujourd'hui et est réellement open source — vous pouvez lire, modifier et redistribuer le code sous sa licence, ce que le statut source-available d'Umbra n'accorde pas. La différence se joue sur la vérification : DevToys se dit « axé sur la confidentialité » ; Umbra publie une vérification précise et reproductible — un contrôle réseau, à exécuter soi-même, décrit sur la page d'accueil — qui montre ce qui se passe réellement, outil par outil. Umbra propose aussi une fonctionnalité d'IA locale, la reconnaissance de texte hors ligne, que DevToys n'a pas à ce jour."
+}

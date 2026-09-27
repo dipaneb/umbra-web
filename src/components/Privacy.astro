@@ -1,0 +1,170 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { localizePath, type Lang } from '../i18n/utils';
+
+interface Props {
+	lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+const copy = {
+	en: {
+		seoTitle: 'Privacy Policy',
+		seoDescription:
+			'What the Umbra website collects and doesn’t: cookieless analytics, no session recording, no email capture.',
+		h1: 'Privacy policy',
+		lastUpdated: 'Last updated:',
+		toBeSet: 'to be set at launch.',
+		h2Covers: 'What this page covers',
+		h2Data: 'Data collected',
+		dataItems: [
+			'The page path and URL you viewed, and the page you came from, if any',
+			'Your browser, operating system, device type, and screen size, read from standard browser information — not from a fingerprinting script',
+			'If you click "Download," which platform you selected (macOS, Windows, or Linux) — this tells us which platform to prioritize, not who you are',
+			'If you click "Watch on GitHub" — again, only that the click happened',
+			'Standard analytics metadata: a timestamp and an event name for each of the above',
+		],
+		h2NotCollected: "What's not collected",
+		notCollected: [
+			'No cookies',
+			'No session recordings, no screen replays, no autocapture of clicks or form fields',
+			'No cross-site tracking, no advertising identifiers, nothing shared with ad networks',
+			'No account, no email address, no name — this site has no sign-up, login, or newsletter',
+			"No data leaves the EU for this site's own analytics — the PostHog project we use is EU-hosted",
+		],
+		h2Legal: 'Legal basis & your rights',
+		legalP1:
+			'We process this data under "legitimate interest" (GDPR Article 6(1)(f)): it’s limited to anonymous, aggregate measurement of how this site is used, for our own use only, and isn’t combined with any other data source or used to track you elsewhere.',
+		legalP2:
+			'You have the right, under GDPR, to access, correct, or request deletion of data held about you, to object to this processing, and to lodge a complaint with the CNIL (cnil.fr), the French data protection authority. In practice, because this analytics has no account, email, or persistent identifier tied to it, there is usually nothing we can look up against your specific identity even on request — that’s a consequence of collecting less, not a way of avoiding these rights. If you believe we hold something identifiable about you, or have any other question, contact us below.',
+		h2Contact: 'Data controller & contact',
+		contactPending: 'Contact details to be added.',
+		h2Changes: 'Changes to this policy',
+		changes:
+			'This page is updated whenever what we collect changes — for example, when a new analytics event ships. Changes are dated at the top of this page.',
+	},
+	fr: {
+		seoTitle: 'Politique de confidentialité',
+		seoDescription:
+			'Ce que le site Umbra collecte et ne collecte pas : analyse sans cookies, sans enregistrement de session, sans collecte d’e-mails.',
+		h1: 'Politique de confidentialité',
+		lastUpdated: 'Dernière mise à jour :',
+		toBeSet: 'à définir au lancement.',
+		h2Covers: 'Ce que couvre cette page',
+		h2Data: 'Données collectées',
+		dataItems: [
+			"La page et l'URL consultées, et la page d'origine, le cas échéant",
+			"Votre navigateur, système d'exploitation, type d'appareil et taille d'écran, lus depuis les informations standard du navigateur — pas via un script de fingerprinting",
+			'Si vous cliquez sur « Télécharger », la plateforme choisie (macOS, Windows ou Linux) — cela nous indique quelle plateforme prioriser, pas qui vous êtes',
+			'Si vous cliquez sur « Suivre sur GitHub » — là encore, uniquement le fait que le clic a eu lieu',
+			'Métadonnées d’analyse standard : horodatage et nom de l’événement pour chacun des points ci-dessus',
+		],
+		h2NotCollected: "Ce qui n'est pas collecté",
+		notCollected: [
+			'Aucun cookie',
+			'Aucun enregistrement de session, aucune capture d’écran, aucune capture automatique des clics ou des champs de formulaire',
+			'Aucun suivi entre sites, aucun identifiant publicitaire, rien de partagé avec des régies publicitaires',
+			'Aucun compte, aucune adresse e-mail, aucun nom — ce site ne propose ni inscription, ni connexion, ni newsletter',
+			'Aucune donnée ne quitte l’UE pour les statistiques propres à ce site — le projet PostHog utilisé est hébergé dans l’UE',
+		],
+		h2Legal: 'Base légale et vos droits',
+		legalP1:
+			'Nous traitons ces données sur la base de « l’intérêt légitime » (article 6(1)(f) du RGPD) : ce traitement se limite à une mesure d’audience anonyme et agrégée, pour notre seul usage, sans croisement avec une autre source de données ni utilisation pour vous suivre ailleurs.',
+		legalP2:
+			'Vous disposez, en vertu du RGPD, d’un droit d’accès, de rectification ou de suppression des données vous concernant, d’un droit d’opposition à ce traitement, et du droit d’introduire une réclamation auprès de la CNIL (cnil.fr). En pratique, cette mesure d’audience n’étant liée à aucun compte, e-mail ou identifiant persistant, il n’y a généralement rien que nous puissions retrouver à partir de votre identité, même sur demande — une conséquence du fait de collecter moins, pas un moyen de contourner ces droits. Si vous pensez que nous détenons une donnée vous identifiant, ou pour toute autre question, contactez-nous ci-dessous.',
+		h2Contact: 'Responsable du traitement et contact',
+		contactPending: 'Coordonnées à renseigner.',
+		h2Changes: 'Modifications de cette politique',
+		changes:
+			'Cette page est mise à jour à chaque changement de ce qui est collecté — par exemple, lors de l’ajout d’un nouvel événement d’analyse. Les modifications sont datées en haut de cette page.',
+	},
+} as const;
+
+const c = copy[lang];
+const faqHref = `${localizePath('/faq/', lang)}#update-check-vs-zero-network-calls`;
+---
+
+<Layout title={c.seoTitle} description={c.seoDescription}>
+	<section class="section container prose legal-page">
+		<h1>{c.h1}</h1>
+		<p class="page-lede">{c.lastUpdated} <!-- TODO(developer): set at launch --> {c.toBeSet}</p>
+
+		<h2>{c.h2Covers}</h2>
+		{
+			lang === 'fr' ? (
+				<p>
+					Cette politique ne couvre que ce site web (umbra-web) et les données d'analyse anonymes
+					qu'il collecte sur ses visites. Elle ne couvre pas l'application de bureau Umbra, qui est
+					un produit séparé avec sa propre déclaration de confidentialité, bien plus stricte — voir
+					la <a href={faqHref}>FAQ</a> et le README de l'application pour cette information. Rien de
+					ce que vous faites dans l'application Umbra n'est décrit par cette page.
+				</p>
+			) : (
+				<p>
+					This policy covers only this website (umbra-web) and the anonymous analytics it collects
+					about visits to it. It does not cover the Umbra desktop application, which is a separate
+					product with its own, much stricter privacy disclosure — see the <a href={faqHref}>FAQ</a>{' '}
+					and the app's own README for that claim. Nothing you do inside the Umbra app is described
+					by this page.
+				</p>
+			)
+		}
+
+		<h2>{c.h2Data}</h2>
+		{
+			lang === 'fr' ? (
+				<p>
+					Ce site utilise <a href="https://posthog.com">PostHog</a>, hébergé dans l'UE, pour des
+					statistiques anonymes de pages vues. L'enregistrement de session et la capture automatique
+					sont tous deux désactivés. Avec cette configuration, la visite de ce site peut générer les
+					données suivantes :
+				</p>
+			) : (
+				<p>
+					This site uses <a href="https://posthog.com">PostHog</a>, hosted in the EU, for anonymous
+					page-view analytics. Session recording and autocapture are both turned off. With that
+					configuration, visiting this site can generate the following data:
+				</p>
+			)
+		}
+		<ul>
+			{c.dataItems.map((item) => <li>{item}</li>)}
+		</ul>
+		<p>
+			<em>
+				{lang === 'fr'
+					? "Non confirmé, à vérifier avant le lancement : si le projet PostHog de ce site conserve l'adresse IP depuis laquelle votre navigateur se connecte. PostHog désactive ce réglage par défaut pour les nouveaux projets hébergés dans l'UE, mais il s'agit d'un réglage propre au projet, non vérifiable depuis le code public du site — ce point sera tranché, dans un sens ou dans l'autre, avant la publication de cette politique."
+					: "Unconfirmed, checked before launch: whether this site's PostHog project stores the IP address your browser connects from. PostHog disables this by default for new EU-hosted projects, but it's a project setting, not something this page's authors can verify from the site's published code — this line will be resolved, one way or the other, before this policy ships."}
+			</em>
+		</p>
+
+		<h2>{c.h2NotCollected}</h2>
+		<ul>
+			{c.notCollected.map((item) => <li>{item}</li>)}
+		</ul>
+
+		<h2>{c.h2Legal}</h2>
+		<p>{c.legalP1}</p>
+		<p>{c.legalP2}</p>
+
+		<h2>{c.h2Contact}</h2>
+		<!-- TODO(developer): a non-personal contact channel — see landing-legal.md §1's own open item,
+		     shared with /legal and /eula's Contact sections. -->
+		<p>{c.contactPending}</p>
+
+		<h2>{c.h2Changes}</h2>
+		<p>{c.changes}</p>
+	</section>
+</Layout>
+
+<style>
+	.legal-page {
+		max-width: 38rem;
+	}
+
+	.legal-page h1,
+	.legal-page h2 {
+		text-align: left;
+	}
+</style>

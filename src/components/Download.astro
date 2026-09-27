@@ -1,0 +1,375 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { localizePath, type Lang } from '../i18n/utils';
+
+interface Props {
+	lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+const copy = {
+	en: {
+		seoTitle: 'Download Umbra — macOS, Windows & Linux',
+		seoDescription:
+			'Download Umbra free for macOS, Windows, or Linux. Signed and notarized on macOS; Windows and Linux builds are best-effort.',
+		h1: 'Download',
+		lede: 'Available for macOS, Windows, and Linux.',
+		eulaNote: 'By downloading, you agree to the ',
+		eulaLinkText: 'End User License Agreement',
+		releaseStatusLoading: 'Checking the latest release…',
+		noscript: 'JavaScript is needed to show live platform availability — ',
+		noscriptLinkText: 'see releases directly on GitHub',
+		btnMacos: 'Download for macOS',
+		btnWindows: 'Download for Windows',
+		btnLinux: 'Download for Linux',
+		macosReassurance: 'Signed and notarized by Apple — opens with no Gatekeeper warning.',
+		windowsReassurance: 'Best-effort build: CI-built, lightly tested — not signed yet.',
+		linuxFormatNote: 'Available as .deb, .rpm, or AppImage.',
+		linuxReassurance:
+			'Using the AppImage? Run chmod +x on it first, or enable "Allow executing as program" in your file manager’s properties.',
+		unavailablePrefix: (platform: string) => `Not yet available for ${platform} — check back after the next release, or `,
+		watchLinkText: 'watch the repo on GitHub',
+		unavailableSuffix: ' to get notified.',
+		platformNames: { macos: 'macOS', windows: 'Windows', linux: 'Linux' },
+		modalTitle: 'Before you download.',
+		modalBodyIntro:
+			"This build isn't code-signed — that costs money we haven't spent yet on a free project. When you run it, Windows will show a \"Windows protected your PC\" warning. That's standard for any unsigned app, not a finding about this one. To open it: click ",
+		modalMoreInfo: 'More info',
+		modalThen: ', then ',
+		modalRunAnyway: 'Run anyway',
+		modalCancel: 'Cancel',
+		modalContinue: 'Continue download',
+		js: {
+			fetchFailurePrefix: "Couldn't check the latest release just now — ",
+			fetchFailureLinkText: 'see it directly on GitHub',
+			dateLocale: 'en-US',
+		},
+	},
+	fr: {
+		seoTitle: 'Télécharger Umbra — macOS, Windows et Linux',
+		seoDescription:
+			'Téléchargez Umbra gratuitement pour macOS, Windows ou Linux. Version macOS signée et notarisée ; Windows et Linux fournis en best-effort.',
+		h1: 'Télécharger',
+		lede: 'Disponible pour macOS, Windows et Linux.',
+		eulaNote: 'En téléchargeant, vous acceptez le ',
+		eulaLinkText: 'Contrat de licence utilisateur final',
+		releaseStatusLoading: 'Vérification de la dernière version…',
+		noscript: 'JavaScript est nécessaire pour afficher la disponibilité en direct — ',
+		noscriptLinkText: 'consultez les versions directement sur GitHub',
+		btnMacos: 'Télécharger pour macOS',
+		btnWindows: 'Télécharger pour Windows',
+		btnLinux: 'Télécharger pour Linux',
+		macosReassurance: 'Signée et notarisée par Apple — s’ouvre sans avertissement Gatekeeper.',
+		windowsReassurance: 'Build fourni à titre best-effort : généré automatiquement, peu testé — pas encore signé.',
+		linuxFormatNote: 'Disponible en .deb, .rpm, ou AppImage.',
+		linuxReassurance:
+			'Vous utilisez l’AppImage ? Exécutez d’abord chmod +x dessus, ou activez « Autoriser l’exécution du fichier comme un programme » dans les propriétés de votre gestionnaire de fichiers.',
+		unavailablePrefix: (platform: string) => `Pas encore disponible pour ${platform} — repassez après la prochaine version, ou `,
+		watchLinkText: 'suivez le dépôt sur GitHub',
+		unavailableSuffix: ' pour être averti.',
+		platformNames: { macos: 'macOS', windows: 'Windows', linux: 'Linux' },
+		modalTitle: 'Avant de télécharger.',
+		modalBodyIntro:
+			"Ce build n'est pas signé numériquement — cela représente un coût que nous n'avons pas encore engagé pour un projet gratuit. À l'exécution, Windows affichera l'avertissement « Windows a protégé votre ordinateur ». C'est le comportement standard pour toute application non signée, pas un signal propre à Umbra. Pour l'ouvrir : cliquez sur ",
+		modalMoreInfo: "Plus d'informations",
+		modalThen: ', puis ',
+		modalRunAnyway: 'Exécuter quand même',
+		modalCancel: 'Annuler',
+		modalContinue: 'Continuer le téléchargement',
+		js: {
+			fetchFailurePrefix: 'Impossible de vérifier la dernière version pour le moment — ',
+			fetchFailureLinkText: 'consultez-la directement sur GitHub',
+			dateLocale: 'fr-FR',
+		},
+	},
+} as const;
+
+const c = copy[lang];
+const jsStrings = {
+	fetchFailurePrefix: c.js.fetchFailurePrefix,
+	fetchFailureLinkText: c.js.fetchFailureLinkText,
+	dateLocale: c.js.dateLocale,
+	metaSeparator: lang === 'fr' ? ' · Publiée le ' : ' · Released ',
+};
+---
+
+<Layout title={c.seoTitle} description={c.seoDescription} rawTitle>
+	<section class="section container download-page">
+		<h1>{c.h1}</h1>
+		<p class="page-lede">{c.lede}</p>
+		<p class="eula-note">
+			{c.eulaNote}<a href={localizePath('/eula/', lang)}>{c.eulaLinkText}</a>.
+		</p>
+
+		<p id="release-status" class="release-status">{c.releaseStatusLoading}</p>
+		<noscript>
+			<p class="release-status">
+				{c.noscript}
+				<a href="https://github.com/dipaneb/umbra/releases">{c.noscriptLinkText}</a>.
+			</p>
+		</noscript>
+
+		<div class="os-tabs">
+			<input type="radio" name="os" id="os-macos" checked />
+			<label for="os-macos">macOS</label>
+			<input type="radio" name="os" id="os-windows" />
+			<label for="os-windows">Windows</label>
+			<input type="radio" name="os" id="os-linux" />
+			<label for="os-linux">Linux</label>
+
+			<div class="os-panel" id="panel-macos">
+				<a
+					id="btn-macos"
+					class="button"
+					href="https://github.com/dipaneb/umbra/releases/latest"
+					data-analytics="download_clicked"
+					data-analytics-props='{"platform":"macos"}'
+					hidden
+				>
+					{c.btnMacos}
+				</a>
+				<p class="unavailable" id="unavailable-macos" hidden>
+					{c.unavailablePrefix(c.platformNames.macos)}
+					<a href="https://github.com/dipaneb/umbra" data-analytics="notify_me_clicked">{c.watchLinkText}</a
+					>{c.unavailableSuffix}
+				</p>
+				<p class="reassurance">{c.macosReassurance}</p>
+				<p class="meta" id="meta-macos"></p>
+			</div>
+
+			<div class="os-panel" id="panel-windows">
+				<button type="button" id="btn-windows" class="button" data-analytics-props='{"platform":"windows"}' hidden>
+					{c.btnWindows}
+				</button>
+				<p class="unavailable" id="unavailable-windows" hidden>
+					{c.unavailablePrefix(c.platformNames.windows)}
+					<a href="https://github.com/dipaneb/umbra" data-analytics="notify_me_clicked">{c.watchLinkText}</a
+					>{c.unavailableSuffix}
+				</p>
+				<p class="reassurance">{c.windowsReassurance}</p>
+			</div>
+
+			<div class="os-panel" id="panel-linux">
+				<p class="format-note">{c.linuxFormatNote}</p>
+				<a
+					id="btn-linux"
+					class="button"
+					href="https://github.com/dipaneb/umbra/releases/latest"
+					data-analytics="download_clicked"
+					data-analytics-props='{"platform":"linux"}'
+					hidden
+				>
+					{c.btnLinux}
+				</a>
+				<p class="unavailable" id="unavailable-linux" hidden>
+					{c.unavailablePrefix(c.platformNames.linux)}
+					<a href="https://github.com/dipaneb/umbra" data-analytics="notify_me_clicked">{c.watchLinkText}</a
+					>{c.unavailableSuffix}
+				</p>
+				<p class="reassurance">{c.linuxReassurance}</p>
+			</div>
+		</div>
+
+		<dialog id="windows-modal">
+			<h2>{c.modalTitle}</h2>
+			<p>
+				{c.modalBodyIntro}<strong>{c.modalMoreInfo}</strong>{c.modalThen}<strong>{c.modalRunAnyway}</strong>.
+			</p>
+			<div class="dialog-actions">
+				<button type="button" id="windows-modal-cancel" class="button-secondary">{c.modalCancel}</button>
+				<button type="button" id="windows-modal-continue" class="button">{c.modalContinue}</button>
+			</div>
+		</dialog>
+	</section>
+</Layout>
+
+<script is:inline define:vars={{ strings: jsStrings }}>
+	(function () {
+		var REPO = 'dipaneb/umbra';
+		var statusEl = document.getElementById('release-status');
+
+		var panels = {
+			macos: {
+				test: /\.dmg$/i,
+				button: document.getElementById('btn-macos'),
+				unavailable: document.getElementById('unavailable-macos'),
+			},
+			windows: {
+				test: /\.(exe|msi)$/i,
+				button: document.getElementById('btn-windows'),
+				unavailable: document.getElementById('unavailable-windows'),
+			},
+			linux: {
+				test: /\.(deb|rpm|AppImage)$/i,
+				button: document.getElementById('btn-linux'),
+				unavailable: document.getElementById('unavailable-linux'),
+			},
+		};
+
+		// Auto-detect + pre-select the visitor's platform tab (landing-ia.md §4).
+		var ua = navigator.userAgent;
+		var detected = /Win/.test(ua) ? 'windows' : /Linux/.test(ua) && !/Android/.test(ua) ? 'linux' : 'macos';
+		var radio = document.getElementById('os-' + detected);
+		if (radio) radio.checked = true;
+
+		fetch('https://api.github.com/repos/' + REPO + '/releases/latest')
+			.then(function (res) {
+				if (!res.ok) throw new Error('bad response');
+				return res.json();
+			})
+			.then(function (data) {
+				statusEl.hidden = true;
+
+				Object.keys(panels).forEach(function (platform) {
+					var panel = panels[platform];
+					var asset = data.assets.find(function (a) {
+						return panel.test.test(a.name);
+					});
+					if (asset) {
+						if (panel.button.tagName === 'A') panel.button.href = asset.browser_download_url;
+						else panel.button.dataset.href = asset.browser_download_url;
+						panel.button.hidden = false;
+						panel.unavailable.hidden = true;
+					} else {
+						panel.button.hidden = true;
+						panel.unavailable.hidden = false;
+					}
+				});
+
+				var metaEl = document.getElementById('meta-macos');
+				if (metaEl) {
+					var date = new Date(data.published_at).toLocaleDateString(strings.dateLocale, {
+						year: 'numeric',
+						month: 'long',
+						day: 'numeric',
+						timeZone: 'UTC',
+					});
+					metaEl.textContent = 'Version ' + data.tag_name.replace(/^v/, '') + strings.metaSeparator + date;
+				}
+			})
+			.catch(function () {
+				statusEl.textContent = strings.fetchFailurePrefix;
+				var link = document.createElement('a');
+				link.href = 'https://github.com/dipaneb/umbra/releases';
+				link.textContent = strings.fetchFailureLinkText;
+				statusEl.appendChild(link);
+				statusEl.append('.');
+			});
+
+		// Windows unsigned-build disclosure modal — fires before the file downloads
+		// (landing-strategy.md §4 event table: windows_unsigned_modal_shown/_proceeded).
+		var winButton = document.getElementById('btn-windows');
+		var modal = document.getElementById('windows-modal');
+		var modalCancel = document.getElementById('windows-modal-cancel');
+		var modalContinue = document.getElementById('windows-modal-continue');
+
+		winButton.addEventListener('click', function () {
+			modal.showModal();
+			if (window.posthog) window.posthog.capture('windows_unsigned_modal_shown');
+		});
+
+		modalCancel.addEventListener('click', function () {
+			modal.close();
+		});
+
+		modalContinue.addEventListener('click', function () {
+			if (window.posthog) {
+				window.posthog.capture('windows_unsigned_modal_proceeded');
+				window.posthog.capture('download_clicked', { platform: 'windows' });
+			}
+			modal.close();
+			if (winButton.dataset.href) window.location.href = winButton.dataset.href;
+		});
+	})();
+</script>
+
+<style>
+	.download-page {
+		max-width: 40rem;
+	}
+
+	.eula-note {
+		color: var(--text-secondary);
+		font-size: var(--type-caption);
+	}
+
+	.release-status {
+		color: var(--text-secondary);
+		font-size: var(--type-caption);
+	}
+
+	.os-tabs {
+		margin-top: var(--space-8);
+	}
+
+	.os-tabs input[type='radio'] {
+		position: absolute;
+		opacity: 0;
+		pointer-events: none;
+	}
+
+	.os-tabs label {
+		display: inline-block;
+		padding: var(--space-2) var(--space-4);
+		border: 1px solid var(--border-hairline);
+		border-radius: var(--radius-default);
+		margin-right: var(--space-2);
+		cursor: pointer;
+		font-weight: 600;
+	}
+
+	#os-macos:checked ~ label[for='os-macos'],
+	#os-windows:checked ~ label[for='os-windows'],
+	#os-linux:checked ~ label[for='os-linux'] {
+		background: var(--accent-signature);
+		color: #ffffff;
+		border-color: var(--accent-signature);
+	}
+
+	.os-panel {
+		display: none;
+		border: 1px solid var(--border-hairline);
+		border-radius: var(--radius-lg);
+		padding: var(--space-6);
+		margin-top: var(--space-4);
+	}
+
+	#os-macos:checked ~ #panel-macos,
+	#os-windows:checked ~ #panel-windows,
+	#os-linux:checked ~ #panel-linux {
+		display: block;
+	}
+
+	.reassurance,
+	.format-note,
+	.meta {
+		color: var(--text-secondary);
+		font-size: var(--type-caption);
+		margin-top: var(--space-3);
+	}
+
+	.unavailable {
+		color: var(--text-secondary);
+	}
+
+	dialog {
+		max-width: 32rem;
+		border: 1px solid var(--border-hairline);
+		border-radius: var(--radius-lg);
+		padding: var(--space-6);
+		background: var(--bg-surface);
+		color: var(--text-primary);
+	}
+
+	dialog::backdrop {
+		background: rgba(0, 0, 0, 0.5);
+	}
+
+	.dialog-actions {
+		display: flex;
+		justify-content: flex-end;
+		gap: var(--space-3);
+		margin-top: var(--space-6);
+	}
+</style>

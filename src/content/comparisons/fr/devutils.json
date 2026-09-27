@@ -1,0 +1,37 @@
+{
+	"competitorName": "DevUtils",
+	"order": 2,
+	"dateChecked": "2026-09-19",
+	"seoTitle": "Umbra vs. DevUtils — Comparatif",
+	"seoDescription": "Comment Umbra se compare à DevUtils : prix, plateformes, outils, code source, vérification de la confidentialité.",
+	"intro": "DevUtils est l'alternative payante et établie, réservée à macOS. Voici comment les deux se comparent, vérifié le 19/09/2026.",
+	"rows": [
+		{
+			"label": "Prix",
+			"umbra": "Gratuit, sans compte",
+			"competitor": "Payant (licences perpétuelles/équipe ; prix exact non publié sur son propre site au 19/09/2026)"
+		},
+		{
+			"label": "Plateformes",
+			"umbra": "macOS (signé, notarisé), Windows et Linux (best-effort)",
+			"competitor": "macOS uniquement (10.13+, Intel et Apple Silicon)"
+		},
+		{ "label": "Outils", "umbra": "9", "competitor": "47+" },
+		{
+			"label": "Source",
+			"umbra": "Source-available (public, tous droits réservés)",
+			"competitor": "Propriétaire — code source non publié"
+		},
+		{
+			"label": "Vérification de la confidentialité",
+			"umbra": "Un contrôle réseau documenté et reproductible, à exécuter vous-même",
+			"competitor": "Affirme que « tout ce que vous collez dans l'application ne quitte jamais votre machine » ; aucun mécanisme de vérification publié trouvé au 19/09/2026"
+		},
+		{
+			"label": "Fonctionnalité d'IA locale",
+			"umbra": "Oui — OCR hors ligne (Image en texte)",
+			"competitor": "Aucune trouvée au 19/09/2026"
+		}
+	],
+	"verdict": "DevUtils propose bien plus d'outils, avec des années de finition sur une seule plateforme — si vous êtes exclusivement sur macOS et que payer ne vous dérange pas, c'est un choix mature et reconnu. Il affirme presque la même promesse qu'Umbra (« ne quitte jamais votre machine ») — mais l'affirme une fois, dans une phrase, sans publier de moyen de la vérifier. Umbra est gratuit, fonctionne sur trois plateformes au lieu d'une, et propose une fonctionnalité d'IA locale que DevUtils n'a pas à ce jour."
+}

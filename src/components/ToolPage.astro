@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { useTranslations, localizePath, type Lang } from '../i18n/utils';
 
 interface FaqItem {
 	q: string;
@@ -7,6 +8,7 @@ interface FaqItem {
 }
 
 interface Props {
+	lang: Lang;
 	title: string;
 	description: string;
 	name: string;
@@ -17,12 +19,13 @@ interface Props {
 	faqs: FaqItem[];
 }
 
-const { title, description, name, directAnswer, body, screenshotSlug, screenshotAlt, faqs } = Astro.props;
+const { lang, title, description, name, directAnswer, body, screenshotSlug, screenshotAlt, faqs } = Astro.props;
+const t = useTranslations(lang);
 ---
 
 <Layout title={title} description={description}>
 	<section class="section container prose tool-page">
-		<a class="back-link" href="/tools/">← All tools</a>
+		<a class="back-link" href={localizePath('/tools/', lang)}>{t('cta.backToTools')}</a>
 		<h1>{name}</h1>
 		<p class="direct-answer"><strong>{directAnswer}</strong></p>
 		<p>{body}</p>
@@ -39,9 +42,9 @@ const { title, description, name, directAnswer, body, screenshotSlug, screenshot
 			/>
 		</picture>
 
-		<a class="button" href="/download/" data-analytics="download_clicked">Download</a>
+		<a class="button" href={localizePath('/download/', lang)} data-analytics="download_clicked">{t('cta.download')}</a>
 
-		<h2>FAQ</h2>
+		<h2>{t('cta.faqHeading')}</h2>
 		<ul class="faq-list">
 			{
 				faqs.map((item) => (

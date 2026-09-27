@@ -1,12 +1,16 @@
 // Plain data file, not a content collection — one page, one ordered list,
-// proportionate to what's actually repeating (landing-ia.md §5).
+// proportionate to what's actually repeating (landing-ia.md §5). Step 6.5
+// adds the French array alongside the English one; both keep the same `id`
+// order and slugs so an anchor like `/faq/#update-check-vs-zero-network-calls`
+// resolves the same way in either locale (ids aren't themselves translated —
+// they're internal anchors, not visible copy).
 export interface FaqEntry {
 	id: string;
 	q: string;
 	a: string | null;
 }
 
-export const faqs: FaqEntry[] = [
+export const faqsEn: FaqEntry[] = [
 	{
 		id: 'windows-smartscreen-warning',
 		q: 'Why did Windows warn me this file might be dangerous?',
@@ -48,3 +52,50 @@ export const faqs: FaqEntry[] = [
 		a: `Yes — run a network monitor while Umbra is running and watch what it actually does, on your own downloaded copy, instead of taking the claim on faith. On macOS: quit and relaunch Umbra while nettop -p $(pgrep -x umbra) is already running in a terminal. You'll see exactly one connection — the update check, at launch — and nothing else, no matter which tool you use. (macOS only; Windows and Linux instructions don't exist yet.) The full reasoning is on the home page's "Verify it yourself" section.`,
 	},
 ];
+
+export const faqsFr: FaqEntry[] = [
+	{
+		id: 'windows-smartscreen-warning',
+		q: 'Pourquoi Windows m’a-t-il averti que ce fichier pourrait être dangereux ?',
+		a: `Windows affiche l'avertissement « Windows a protégé votre ordinateur » pour toute application non signée numériquement — et le build Windows d'Umbra ne l'est pas encore. La signature de code nécessite un certificat payant, à renouveler chaque année, ce qui n'a pas encore été justifié pour un projet gratuit sans revenu. Ce n'est pas un signal propre à Umbra ; c'est la réponse standard de Windows à tout .exe non signé. Pour l'ouvrir : cliquez sur Plus d'informations, puis Exécuter quand même.`,
+	},
+	{
+		id: 'open-source-and-audit-status',
+		q: 'Umbra est-il open source ?',
+		a: `Non — Umbra est source-available, pas open source. Le dépôt est public, donc vous (ou n'importe qui) pouvez lire le code et vérifier ce qu'il fait, y compris la couche réseau. Mais la licence est All Rights Reserved : personne n'a le droit de copier, modifier, redistribuer ou réutiliser le code sans autorisation écrite. Il n'existe pas non plus d'audit formel par un tiers — ce qui s'en approche le plus est le contrôle réseau décrit dans la section « Vérifiez-le vous-même » de la page d'accueil, que vous pouvez exécuter vous-même sur votre propre copie.`,
+	},
+	{
+		id: 'windows-linux-trust-parity',
+		q: 'Les builds Windows et Linux sont-ils aussi fiables que la version macOS ?',
+		a: `Pas de la même façon — les builds Windows et Linux d'Umbra sont fournis à titre best-effort, tandis que macOS est la plateforme principale : entièrement testée, signée avec un certificat Developer ID, et notarisée par Apple. Windows et Linux sont générés par le même pipeline de publication, mais pas testés sur une seconde machine comme macOS l'est, et le build Windows n'est pas encore signé.`,
+	},
+	{
+		id: 'update-behavior',
+		q: 'La mise à jour d’Umbra installe-t-elle quelque chose sans me demander ?',
+		a: `Non. Chaque mise à jour affiche une boîte de dialogue de confirmation avant toute installation. Si vous refusez, Umbra continue de fonctionner exactement comme avant — rien ne change sans votre accord.`,
+	},
+	{
+		id: 'update-check-vs-zero-network-calls',
+		q: `La vérification des mises à jour ne contredit-elle pas la promesse « zéro appel réseau » ?`,
+		a: `La vérification des mises à jour est l'unique exception assumée à cette promesse. Une fois, au lancement, Umbra vérifie sur GitHub si une nouvelle version existe — c'est le seul appel réseau qu'il effectue, le même que celui décrit dans la section « Vérifiez-le vous-même » de la page d'accueil. Seule l'étape d'installation attend votre confirmation ; la vérification, elle, se fait automatiquement. C'est aussi tout ce qu'Umbra collecte en matière d'analyse — l'application elle-même n'envoie aucune télémétrie ; les statistiques anonymes de pages vues de ce site sont un sujet distinct, propre au site (voir la politique de confidentialité).`,
+	},
+	{
+		id: 'comparison-to-named-competitors',
+		q: 'En quoi Umbra diffère-t-il de DevToys, DevUtils ou DevTools-X ?',
+		a: null,
+	},
+	{
+		id: 'free-online-tools',
+		q: 'Pourquoi ne pas simplement utiliser un formateur JSON ou un décodeur JWT gratuit en ligne ?',
+		a: null,
+	},
+	{
+		id: 'verify-privacy-yourself',
+		q: `Existe-t-il un moyen de vérifier qu'Umbra n'envoie vraiment aucune donnée nulle part, plutôt que de simplement croire ce qu'il affirme ?`,
+		a: `Oui — exécutez un moniteur réseau pendant qu'Umbra tourne, sur votre propre copie téléchargée, et observez ce qu'il fait réellement plutôt que de le croire sur parole. Sur macOS : quittez puis relancez Umbra pendant que nettop -p $(pgrep -x umbra) tourne déjà dans un terminal. Vous ne verrez qu'une seule connexion — la vérification de mise à jour, au lancement — et rien d'autre, quel que soit l'outil utilisé. (macOS uniquement ; les instructions pour Windows et Linux n'existent pas encore.) Le raisonnement complet se trouve dans la section « Vérifiez-le vous-même » de la page d'accueil.`,
+	},
+];
+
+export function getFaqs(lang: 'en' | 'fr'): FaqEntry[] {
+	return lang === 'fr' ? faqsFr : faqsEn;
+}

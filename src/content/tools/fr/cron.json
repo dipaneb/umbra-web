@@ -1,0 +1,24 @@
+{
+	"name": "Cron",
+	"order": 6,
+	"icon": "CRN",
+	"searchTerms": "cron crontab planification horaire tâche planifiée",
+	"hubBlurb": "Composer une expression cron à 5 champs avec une grille guidée.",
+	"tileDescription": "Composez un planning, champ par champ.",
+	"seoTitle": "Générateur d'expression cron — Hors ligne",
+	"seoDescription": "Composez une expression cron à 5 champs avec une grille guidée, ou collez-en une pour la voir expliquée en langage clair.",
+	"directAnswer": "L'outil Cron d'Umbra compose une expression cron standard à 5 champs, champ par champ, ou relit une expression que vous collez — entièrement hors ligne.",
+	"body": "Réglez individuellement les champs minute, heure, jour du mois, mois et jour de la semaine à l'aide d'une grille guidée, ou collez une expression existante pour la voir expliquée en langage clair et prévisualisée avec ses trois prochaines exécutions. Aucune saisie libre à deviner d'un côté comme de l'autre : chaque champ est choisi parmi un ensemble fixe de valeurs valides.",
+	"screenshotSlug": "cron",
+	"screenshotAlt": "L'outil Cron d'Umbra affichant un planning guidé à 5 champs, sa description en langage clair et ses trois prochaines exécutions.",
+	"faqs": [
+		{
+			"q": "Pourquoi ne pas utiliser un générateur cron gratuit en ligne ?",
+			"a": "Une expression cron seule ne révèle rien de sensible, donc l'argument de confidentialité est plus faible ici qu'ailleurs dans Umbra — mais c'est tout de même un outil de moins pour lequel quitter l'application (la même syntaxe standard à 5 champs qu'utilise crontab)."
+		},
+		{
+			"q": "Comprend-il des phrases comme « tous les jours à 17h » ?",
+			"a": "Non, volontairement — Umbra analysait autrefois des phrases en langage libre pour produire des expressions cron ; cet analyseur a été retiré au profit d'une grille guidée impossible à mal formuler. Collez plutôt une expression existante et Cron la relit en langage clair."
+		}
+	]
+}

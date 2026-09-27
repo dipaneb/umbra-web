@@ -1,0 +1,145 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { localizePath, type Lang } from '../i18n/utils';
+
+interface Props {
+	lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+const copy = {
+	en: {
+		seoTitle: 'Legal Notice',
+		seoDescription:
+			'Publisher identity, hosting provider, and intellectual-property status for the Umbra website, per French law.',
+		h1: 'Legal notice',
+		lastUpdated: 'Last updated:',
+		toBeSet: 'to be set at launch.',
+		h2Publisher: 'Publisher',
+		h2Hosting: 'Hosting provider',
+		hostingCountry: 'United States',
+		h2Contact: 'Contact',
+		contactPending: 'Contact details to be added.',
+		h2IP: 'Intellectual property',
+	},
+	fr: {
+		seoTitle: 'Mentions légales',
+		seoDescription:
+			'Identité de l’éditeur, hébergeur et statut de propriété intellectuelle du site Umbra, conformément au droit français.',
+		h1: 'Mentions légales',
+		lastUpdated: 'Dernière mise à jour :',
+		toBeSet: 'à définir au lancement.',
+		h2Publisher: 'Éditeur',
+		h2Hosting: 'Hébergeur',
+		hostingCountry: 'États-Unis',
+		h2Contact: 'Contact',
+		contactPending: 'Coordonnées à renseigner.',
+		h2IP: 'Propriété intellectuelle',
+	},
+} as const;
+
+const c = copy[lang];
+const eulaHref = localizePath('/eula/', lang);
+const privacyHref = localizePath('/privacy/', lang);
+---
+
+<Layout title={c.seoTitle} description={c.seoDescription}>
+	<section class="section container prose legal-page">
+		<h1>{c.h1}</h1>
+		<p class="page-lede">{c.lastUpdated} <!-- TODO(developer): set at launch --> {c.toBeSet}</p>
+
+		<h2>{c.h2Publisher}</h2>
+		{
+			lang === 'fr' ? (
+				<p>
+					Ce site est édité à titre non professionnel et non commercial par un particulier, en
+					application de l'article 1-1, II de la loi n° 2004-575 du 21 juin 2004 pour la confiance
+					dans l'économie numérique (« LCEN »). Cette disposition permet à un éditeur non
+					professionnel de ne pas divulguer son identité sur cette page et de ne communiquer au
+					public que les coordonnées de son hébergeur — c'est l'option retenue ici. L'éditeur du
+					site a communiqué son identité réelle à l'hébergeur directement, comme la loi l'exige ;
+					elle n'est pas publiée sur cette page et ne peut être divulguée par l'hébergeur qu'à
+					l'autorité judiciaire, jamais sur simple demande.
+				</p>
+			) : (
+				<p>
+					This site is published on a non-professional, non-commercial basis by an individual,
+					under Article 1-1, II of French law n° 2004-575 of 21 June 2004 ("LCEN"). That provision
+					lets a non-professional publisher keep their own identity off this page and disclose only
+					their hosting provider's details instead — the option used here. The site's operator has
+					given their real identity to the hosting provider directly, as the law requires; it is
+					not published on this page, and can only be disclosed by the host to a judicial
+					authority, never on request.
+				</p>
+			)
+		}
+
+		<h2>{c.h2Hosting}</h2>
+		<p>
+			Vercel Inc.<br />
+			440 N Barranca Avenue #4133<br />
+			Covina, CA 91723<br />
+			{c.hostingCountry}
+		</p>
+
+		<h2>{c.h2Contact}</h2>
+		<!-- TODO(developer): shared with /privacy's "Data controller & contact" — one decision, two pages. -->
+		<p>{c.contactPending}</p>
+
+		<h2>{c.h2IP}</h2>
+		{
+			lang === 'fr' ? (
+				<p>
+					Le code source d'Umbra est public et consultable sur{' '}
+					<a href="https://github.com/dipaneb/umbra">github.com/dipaneb/umbra</a>, mais ce n'est pas
+					un logiciel libre ou open source : le dépôt est en « source-available », tous droits
+					réservés. Vous pouvez lire le code pour vérifier vous-même le fonctionnement de
+					l'application. Vous ne pouvez pas le copier, le modifier, le fusionner, le publier, le
+					distribuer, le sous-licencier ou le vendre, en tout ou partie, sans le consentement écrit
+					préalable du titulaire des droits — voir le fichier <code>LICENSE</code> du dépôt pour les
+					conditions complètes. La <a href={eulaHref}>licence d'utilisation</a>, distincte, régit le
+					téléchargement et l'exécution de l'application compilée, et non le code source lui-même.
+				</p>
+			) : (
+				<p>
+					Umbra's source code is public and readable at{' '}
+					<a href="https://github.com/dipaneb/umbra">github.com/dipaneb/umbra</a>, but it is not
+					open source: the repository is source-available, All Rights Reserved. You may read the
+					code to verify how the app works. You may not copy, modify, merge, publish, distribute,
+					sublicense, or sell it, in whole or in part, without the copyright holder's prior written
+					consent — see the repository's <code>LICENSE</code> file for the full terms. The separate{' '}
+					<a href={eulaHref}>end-user licence</a> governs downloading and running the compiled
+					application, not the source code itself.
+				</p>
+			)
+		}
+		{
+			lang === 'fr' ? (
+				<p>
+					Cette page ne concerne que la publication de ce site. Elle ne dit rien des pratiques de
+					l'application de bureau Umbra en matière de données — voir la{' '}
+					<a href={privacyHref}>politique de confidentialité</a> et le README de l'application à ce
+					sujet.
+				</p>
+			) : (
+				<p>
+					This page concerns only the publication of this website. It says nothing about the Umbra
+					desktop application's own data practices — see the <a href={privacyHref}>Privacy policy</a>{' '}
+					and the application's own README for that.
+				</p>
+			)
+		}
+	</section>
+</Layout>
+
+<style>
+	.legal-page {
+		max-width: 38rem;
+	}
+
+	.legal-page h1,
+	.legal-page h2 {
+		text-align: left;
+	}
+</style>

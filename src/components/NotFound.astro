@@ -1,0 +1,36 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { useTranslations, localizePath, type Lang } from '../i18n/utils';
+
+interface Props {
+	lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<Layout title={t('notfound.seoTitle')} description="" noindex={true}>
+	<section class="section container not-found">
+		<h1>{t('notfound.title')}</h1>
+		<p>{t('notfound.body')}</p>
+		<div class="links">
+			<a class="button" href={localizePath('/', lang)}>{t('notfound.home')}</a>
+			<a class="button-secondary" href={localizePath('/download/', lang)}>{t('notfound.download')}</a>
+		</div>
+	</section>
+</Layout>
+
+<style>
+	.not-found {
+		max-width: 30rem;
+		text-align: center;
+	}
+
+	.links {
+		margin-top: var(--space-6);
+		display: flex;
+		gap: var(--space-3);
+		justify-content: center;
+	}
+</style>

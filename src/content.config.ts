@@ -7,10 +7,16 @@ import { z } from 'astro/zod';
 // different git repository — this collection is the mechanical single
 // source *this* repo reads from, kept in manual sync with it
 // (landing-ia.md §5).
+//
+// Locale-scoped since Step 6.5: one subfolder per locale (`en/`, `fr/`),
+// entry id keeps the `{locale}/{slug}` shape (e.g. `en/json`, `fr/json`) so
+// a page can look up its own tool by slug within its own locale — the same
+// per-locale-file convention this collection already used per-tool, just
+// with one more path segment.
 const stripJsonExt = ({ entry }: { entry: string }) => entry.replace(/\.json$/, '');
 
 const tools = defineCollection({
-	loader: glob({ pattern: '*.json', base: './src/content/tools', generateId: stripJsonExt }),
+	loader: glob({ pattern: '**/*.json', base: './src/content/tools', generateId: stripJsonExt }),
 	schema: z.object({
 		name: z.string(),
 		order: z.number(),
@@ -33,7 +39,7 @@ const tools = defineCollection({
 });
 
 const comparisons = defineCollection({
-	loader: glob({ pattern: '*.json', base: './src/content/comparisons', generateId: stripJsonExt }),
+	loader: glob({ pattern: '**/*.json', base: './src/content/comparisons', generateId: stripJsonExt }),
 	schema: z.object({
 		competitorName: z.string(),
 		order: z.number(),

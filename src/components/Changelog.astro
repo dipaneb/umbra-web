@@ -1,0 +1,168 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import type { Lang } from '../i18n/utils';
+
+interface Props {
+	lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+// Hybrid content model (landing-ia.md §5): version/date are read live from
+// the GitHub Releases API at build time; the Added/Changed/Fixed summaries
+// are curated by hand (src/content/changelog/*.json) and never auto-generated
+// from a release's raw body (Step 2.1's "like a language/framework changelog"
+// call) — a plausible-looking automated summary is still self-reported, just
+// by a script instead of a person. The curated entries themselves are
+// English-sourced GitHub release notes and stay untranslated (Step 6.5 —
+// "framing only" per landing-copy.md §4); only this page's own frame
+// (heading, category labels, links) is localized.
+const curatedEntries = await getCollection('changelog');
+const curated = new Map(curatedEntries.map((entry) => [entry.id, entry.data]));
+
+let liveReleases: { tag: string; date: string }[] = [];
+try {
+	const res = await fetch('https://api.github.com/repos/dipaneb/umbra/releases');
+	if (res.ok) {
+		const data = await res.json();
+		liveReleases = data
+			.filter((r: { draft: boolean; prerelease: boolean }) => !r.draft && !r.prerelease)
+			.map((r: { tag_name: string; published_at: string }) => ({ tag: r.tag_name, date: r.published_at }));
+	}
+} catch {
+	// keep liveReleases empty — every entry below falls back to its own
+	// fallbackDate, so the page still renders for an offline build.
+}
+const liveDateByTag = new Map(liveReleases.map((r) => [r.tag, r.date]));
+
+const curatedDisplay = [...curated.entries()].map(([tag, data]) => ({
+	tag,
+	date: liveDateByTag.get(tag) ?? data.fallbackDate,
+	pending: false as const,
+	...data,
+}));
+
+const newestCuratedTime = Math.max(...curatedDisplay.map((entry) => new Date(entry.date).getTime()));
+const pendingEntries = liveReleases
+	.filter((r) => !curated.has(r.tag) && new Date(r.date).getTime() > newestCuratedTime)
+	.map((r) => ({ tag: r.tag, date: r.date, pending: true as const }));
+
+const entries = [...curatedDisplay, ...pendingEntries].sort(
+	(a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+);
+
+function formatDate(iso: string) {
+	// UTC explicitly — this runs at build time, and the release date shouldn't
+	// shift by a day depending on which timezone the build happens to run in.
+	const locale = lang === 'fr' ? 'fr-FR' : 'en-US';
+	return new Date(iso).toLocaleDateString(locale, { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+}
+
+const copy = {
+	en: {
+		seoTitle: 'Changelog',
+		seoDescription: "What's shipped in Umbra, release by release, pulled directly from GitHub — added, changed, fixed.",
+		h1: 'Changelog',
+		lede: "What's shipped, pulled straight from GitHub releases.",
+		added: 'Added',
+		changed: 'Changed',
+		fixed: 'Fixed',
+		pending: 'Release notes coming soon.',
+		fullNotes: 'Full release notes on GitHub.',
+	},
+	fr: {
+		seoTitle: 'Journal des modifications',
+		seoDescription:
+			'Ce qui a été livré dans Umbra, version par version, directement depuis GitHub — ajouts, changements, corrections.',
+		h1: 'Journal des modifications',
+		lede: 'Ce qui a été livré, directement depuis les releases GitHub.',
+		added: 'Ajouts',
+		changed: 'Modifications',
+		fixed: 'Corrections',
+		pending: 'Notes de version à venir.',
+		fullNotes: 'Notes de version complètes sur GitHub.',
+	},
+} as const;
+
+const c = copy[lang];
+---
+
+<Layout title={c.seoTitle} description={c.seoDescription}>
+	<section class="section container prose changelog-page">
+		<h1>{c.h1}</h1>
+		<p class="page-lede">{c.lede}</p>
+
+		{
+			entries.map((entry) => (
+				<article class="entry">
+					<h2>
+						{entry.tag} — {formatDate(entry.date)}
+					</h2>
+					{entry.pending ? (
+						<p class="pending-note">{c.pending}</p>
+					) : (
+						<>
+							{entry.added && (
+								<div class="category">
+									<h3>{c.added}</h3>
+									<ul>{entry.added.map((line) => <li>{line}</li>)}</ul>
+								</div>
+							)}
+							{entry.changed && (
+								<div class="category">
+									<h3>{c.changed}</h3>
+									<ul>{entry.changed.map((line) => <li>{line}</li>)}</ul>
+								</div>
+							)}
+							{entry.fixed && (
+								<div class="category">
+									<h3>{c.fixed}</h3>
+									<ul>{entry.fixed.map((line) => <li>{line}</li>)}</ul>
+								</div>
+							)}
+						</>
+					)}
+				</article>
+			))
+		}
+
+		<p class="full-notes">
+			<a href="https://github.com/dipaneb/umbra/releases">{c.fullNotes}</a>
+		</p>
+	</section>
+</Layout>
+
+<style>
+	.changelog-page {
+		max-width: 42rem;
+	}
+
+	.entry {
+		border-top: 1px solid var(--border-hairline);
+		padding: var(--space-6) 0;
+	}
+
+	.entry h2 {
+		font-family: var(--font-mono);
+		font-size: var(--type-h3);
+		margin-bottom: var(--space-3);
+	}
+
+	.category h3 {
+		font-size: var(--type-caption);
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+		color: var(--text-secondary);
+		margin: var(--space-3) 0 var(--space-1);
+	}
+
+	.full-notes {
+		margin-top: var(--space-8);
+	}
+
+	.pending-note {
+		color: var(--text-secondary);
+		font-style: italic;
+	}
+</style>

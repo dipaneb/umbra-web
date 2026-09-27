@@ -1,0 +1,33 @@
+{
+	"competitorName": "DevTools-X",
+	"order": 3,
+	"dateChecked": "2026-09-19",
+	"seoTitle": "Umbra vs. DevTools-X — Comparatif",
+	"seoDescription": "Comment Umbra se compare à DevTools-X, l'autre application Tauri, sur les outils, la licence et la confidentialité.",
+	"intro": "DevTools-X est le plus proche d'Umbra sur le plan technique — lui aussi construit sur Tauri, multiplateforme et gratuit. Voici comment les deux se comparent, vérifié le 19/09/2026.",
+	"rows": [
+		{ "label": "Prix", "umbra": "Gratuit, sans compte", "competitor": "Gratuit" },
+		{
+			"label": "Plateformes",
+			"umbra": "macOS (signé, notarisé), Windows et Linux (best-effort)",
+			"competitor": "Windows, macOS, Linux"
+		},
+		{ "label": "Outils", "umbra": "9", "competitor": "~41" },
+		{
+			"label": "Source",
+			"umbra": "Source-available (public, tous droits réservés)",
+			"competitor": "Open source (licence MIT)"
+		},
+		{
+			"label": "Vérification de la confidentialité",
+			"umbra": "Un contrôle réseau documenté et reproductible, à exécuter vous-même",
+			"competitor": "Aucun mécanisme de vérification publié trouvé au 19/09/2026 ; son propre site vitrine est actuellement hors service, GitHub est donc sa seule porte d'entrée publique"
+		},
+		{
+			"label": "Fonctionnalité d'IA locale",
+			"umbra": "Oui — OCR hors ligne (Image en texte)",
+			"competitor": "Aucune trouvée au 19/09/2026"
+		}
+	],
+	"verdict": "DevTools-X est construit de la même façon qu'Umbra — une application Tauri, pas Electron — et propose plus d'outils aujourd'hui sous une licence MIT réellement ouverte, que vous pouvez forker et modifier. Son site vitrine est actuellement hors service, seul son dépôt GitHub permet donc de l'évaluer. Umbra propose des builds macOS signés et notarisés, une auto-vérification documentée de la confidentialité, et une fonctionnalité d'IA locale que DevTools-X n'a pas à ce jour."
+}

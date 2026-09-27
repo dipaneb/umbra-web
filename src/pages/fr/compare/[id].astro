@@ -1,11 +1,11 @@
 ---
 import { getCollection } from 'astro:content';
-import ComparePage from '../../components/ComparePage.astro';
+import ComparePage from '../../../components/ComparePage.astro';
 
 export async function getStaticPaths() {
-	const comparisons = (await getCollection('comparisons', ({ id }) => id.startsWith('en/'))).map((c) => ({
+	const comparisons = (await getCollection('comparisons', ({ id }) => id.startsWith('fr/'))).map((c) => ({
 		...c,
-		id: c.id.replace(/^en\//, ''),
+		id: c.id.replace(/^fr\//, ''),
 	}));
 	const sorted = comparisons.sort((a, b) => a.data.order - b.data.order);
 	return sorted.map((comparison) => ({
@@ -22,7 +22,7 @@ const { competitorName, seoTitle, seoDescription, intro, rows, verdict } = compa
 ---
 
 <ComparePage
-	lang="en"
+	lang="fr"
 	title={seoTitle}
 	description={seoDescription}
 	competitorName={competitorName}
