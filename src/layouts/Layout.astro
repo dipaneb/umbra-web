@@ -47,6 +47,15 @@ const frPath = localizePath(enPath, 'fr');
 const enHref = new URL(enPath, Astro.site).toString();
 const frHref = new URL(frPath, Astro.site).toString();
 const langSwitchHref = lang === 'en' ? frPath : enPath;
+
+// Social share card (Step 6.7, asset produced by Step 5.4) — one universal
+// card sitewide, not per-page, per landing-design.md §4's own decision
+// (no French variant, no per-tool screenshot swap). The alt text is that
+// same section's already-written string, reused verbatim on every page in
+// both locales rather than re-derived per page.
+const ogImageURL = new URL('/og-image.png', Astro.site).toString();
+const ogImageAlt =
+	"Umbra wordmark next to the headline \"Local tools. Local AI. Nothing else.\" beside a screenshot of Umbra's JSON tool showing a formatted API-response payload.";
 ---
 
 <!doctype html>
@@ -99,6 +108,16 @@ const langSwitchHref = lang === 'en' ? frPath : enPath;
 		<meta property="og:title" content={pageTitle} />
 		<meta property="og:description" content={description} />
 		<meta property="og:url" content={canonicalURL} />
+		<meta property="og:image" content={ogImageURL} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:alt" content={ogImageAlt} />
+
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={pageTitle} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={ogImageURL} />
+		<meta name="twitter:image:alt" content={ogImageAlt} />
 
 		<!-- Hubot Sans/Geist Sans are used above the fold on every page (hero
 		     or page title, plus body copy); Geist Mono only appears inside
