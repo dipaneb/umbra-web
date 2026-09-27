@@ -34,46 +34,68 @@ const toolLabels =
 const toolSlugs = ['json', 'base64', 'uuid', 'hash', 'jwt', 'cron', 'ocr', 'pdf', 'image'];
 const compareLabels = ['DevToys', 'DevUtils', 'DevTools-X', 'CyberChef'];
 const compareSlugs = ['devtoys', 'devutils', 'devtools-x', 'cyberchef'];
+
+// Built once here so the rendered <details> markup and the FAQPage JSON-LD
+// below (Step 6.6) always carry the exact same answer text — two of these
+// entries render their links dynamically rather than from `item.a`, and
+// landing-copy.md §7 flagged that structured data has to match visible
+// content, not just the raw data file.
+function linksHtml(labels: readonly string[], slugs: readonly string[], base: string) {
+	return labels
+		.map((label, i) => `<a href="${localizePath(`${base}/${slugs[i]}/`, lang)}">${label}</a>${i < labels.length - 1 ? ', ' : '.'}`)
+		.join('');
+}
+
+const comparisonAnswerHtml =
+	(lang === 'fr'
+		? "En bref : Umbra met en avant une revendication précise qu'aucun des trois ne fait de la même façon — une vérification à chaque version montrant zéro appel réseau, pas seulement une phrase affirmant le respect de la vie privée. Les comparaisons complètes et sourcées sont disponibles sur leurs propres pages : "
+		: 'The short version: Umbra leads with one narrow claim none of them make the same way — a per-release check showing zero network calls, not just a sentence asserting privacy. The full, sourced comparisons live on their own pages: ') +
+	linksHtml(compareLabels, compareSlugs, '/compare');
+
+const freeToolsAnswerHtml =
+	(lang === 'fr'
+		? "Parce que tout ce que vous collez dans un outil web quitte votre machine, même brièvement — vous faites confiance à un serveur que vous ne contrôlez pas et ne pouvez pas inspecter. Umbra fonctionne entièrement sur votre appareil : rien de ce que vous collez, déposez ou tapez n'est jamais envoyé ailleurs. Chaque outil a sa propre page avec plus de détails pour ce format précis : "
+		: "Because anything you paste into a web tool leaves your machine, even briefly — you're trusting a server you don't control and can't inspect. Umbra runs entirely on your device: nothing you paste, drop, or type is ever sent anywhere. Each tool has its own page with more on this for that specific format: ") +
+	linksHtml(toolLabels, toolSlugs, '/tools');
+
+const faqsWithAnswers = faqs.map((item) => ({
+	...item,
+	answerHtml:
+		item.id === 'comparison-to-named-competitors'
+			? comparisonAnswerHtml
+			: item.id === 'free-online-tools'
+				? freeToolsAnswerHtml
+				: (item.a ?? ''),
+}));
+
+const faqPageJsonLd = {
+	'@context': 'https://schema.org',
+	'@type': 'FAQPage',
+	mainEntity: faqsWithAnswers.map((item) => ({
+		'@type': 'Question',
+		name: item.q,
+		acceptedAnswer: {
+			'@type': 'Answer',
+			text: item.answerHtml,
+		},
+	})),
+};
 ---
 
 <Layout title={c.seoTitle} description={c.seoDescription}>
+	<script type="application/ld+json" set:html={JSON.stringify(faqPageJsonLd).replace(/</g, '\\u003c')} />
+
 	<section class="section container prose faq-page">
 		<h1>{c.seoTitle}</h1>
 		<p class="page-lede">{c.lede}</p>
 
 		<ul class="faq-list">
 			{
-				faqs.map((item) => (
+				faqsWithAnswers.map((item) => (
 					<li>
 						<details id={item.id}>
 							<summary><h2>{item.q}</h2></summary>
-							{item.id === 'comparison-to-named-competitors' ? (
-								<p class="answer">
-									{lang === 'fr'
-										? "En bref : Umbra met en avant une revendication précise qu'aucun des trois ne fait de la même façon — une vérification à chaque version montrant zéro appel réseau, pas seulement une phrase affirmant le respect de la vie privée. Les comparaisons complètes et sourcées sont disponibles sur leurs propres pages : "
-										: 'The short version: Umbra leads with one narrow claim none of them make the same way — a per-release check showing zero network calls, not just a sentence asserting privacy. The full, sourced comparisons live on their own pages: '}
-									{compareSlugs.map((slug, i) => (
-										<>
-											<a href={localizePath(`/compare/${slug}/`, lang)}>{compareLabels[i]}</a>
-											{i < compareSlugs.length - 1 ? ', ' : '.'}
-										</>
-									))}
-								</p>
-							) : item.id === 'free-online-tools' ? (
-								<p class="answer">
-									{lang === 'fr'
-										? "Parce que tout ce que vous collez dans un outil web quitte votre machine, même brièvement — vous faites confiance à un serveur que vous ne contrôlez pas et ne pouvez pas inspecter. Umbra fonctionne entièrement sur votre appareil : rien de ce que vous collez, déposez ou tapez n'est jamais envoyé ailleurs. Chaque outil a sa propre page avec plus de détails pour ce format précis : "
-										: "Because anything you paste into a web tool leaves your machine, even briefly — you're trusting a server you don't control and can't inspect. Umbra runs entirely on your device: nothing you paste, drop, or type is ever sent anywhere. Each tool has its own page with more on this for that specific format: "}
-									{toolSlugs.map((slug, i) => (
-										<>
-											<a href={localizePath(`/tools/${slug}/`, lang)}>{toolLabels[i]}</a>
-											{i < toolSlugs.length - 1 ? ', ' : '.'}
-										</>
-									))}
-								</p>
-							) : (
-								<p class="answer">{item.a}</p>
-							)}
+							<p class="answer" set:html={item.answerHtml} />
 						</details>
 					</li>
 				))

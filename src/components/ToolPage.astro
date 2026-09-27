@@ -21,9 +21,27 @@ interface Props {
 
 const { lang, title, description, name, directAnswer, body, screenshotSlug, screenshotAlt, faqs } = Astro.props;
 const t = useTranslations(lang);
+
+// FAQPage JSON-LD (Step 6.6) — each tool's own micro-FAQ (Steps 3.4b/3.8),
+// reusing the exact `faqs` content already rendered below so markup and
+// structured data never diverge.
+const faqPageJsonLd = {
+	'@context': 'https://schema.org',
+	'@type': 'FAQPage',
+	mainEntity: faqs.map((item) => ({
+		'@type': 'Question',
+		name: item.q,
+		acceptedAnswer: {
+			'@type': 'Answer',
+			text: item.a,
+		},
+	})),
+};
 ---
 
 <Layout title={title} description={description}>
+	<script type="application/ld+json" set:html={JSON.stringify(faqPageJsonLd).replace(/</g, '\\u003c')} />
+
 	<section class="section container prose tool-page">
 		<a class="back-link" href={localizePath('/tools/', lang)}>{t('cta.backToTools')}</a>
 		<h1>{name}</h1>

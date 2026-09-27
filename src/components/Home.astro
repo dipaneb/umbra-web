@@ -144,9 +144,39 @@ const copy = {
 
 const c = copy[lang];
 const videoBase = `/videos/workflow-demo.${lang}`;
+
+// SoftwareApplication JSON-LD (Step 6.6). Deliberately omits `softwareVersion`
+// and `datePublished` — ledger row 10 (landing-strategy.md §5) forbids
+// hardcoding a version anywhere in site copy or build config, and `downloadUrl`
+// below points at the same never-versioned `/releases/latest` GitHub endpoint
+// Download.astro's own buttons use, for the same reason. Also deliberately
+// omits `aggregateRating`/`review` — Google requires one of them for the
+// SoftwareApplication rich result, but fabricating either would break Step
+// 3.5's "no fabricated stat, star, or testimonial" finding; this markup ships
+// without rich-result eligibility rather than invent one.
+const softwareApplicationJsonLd = {
+	'@context': 'https://schema.org',
+	'@type': 'SoftwareApplication',
+	name: 'Umbra',
+	url: new URL(Astro.url.pathname, Astro.site).toString(),
+	description: c.seoDescription,
+	inLanguage: lang === 'fr' ? 'fr-FR' : 'en-US',
+	applicationCategory: 'DeveloperApplication',
+	operatingSystem: 'macOS, Windows, Linux',
+	downloadUrl: 'https://github.com/dipaneb/umbra/releases/latest',
+	sameAs: 'https://github.com/dipaneb/umbra',
+	license: new URL(localizePath('/eula/', lang), Astro.site).toString(),
+	offers: {
+		'@type': 'Offer',
+		price: '0',
+		priceCurrency: 'EUR',
+	},
+};
 ---
 
 <Layout title={c.seoTitle} description={c.seoDescription}>
+	<script type="application/ld+json" set:html={JSON.stringify(softwareApplicationJsonLd).replace(/</g, '\\u003c')} />
+
 	<section class="hero" id="hero">
 		<div class="hero-text">
 			<h1>{c.heroH1a}<br />{c.heroH1b}</h1>
