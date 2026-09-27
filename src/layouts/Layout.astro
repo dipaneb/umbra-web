@@ -208,14 +208,32 @@ const ogImageAlt =
 		)}
 	</head>
 	<body>
+		<!-- Skip link (WCAG 2.4.1 Bypass Blocks) — every page repeats the same
+		     five-item nav before reaching page content; visually hidden until
+		     focused, first element in the tab order. -->
+		<a href="#main-content" class="skip-link">{t('a11y.skipToContent')}</a>
 		<header class="site-header">
 			<nav class="site-nav" aria-label={t('nav.aria')}>
 				<a class="brand" href={localizePath('/', lang)}>
 					<img class="brand-mark" src="/favicon.svg" width="24" height="24" alt="" />
 					Umbra
 				</a>
-				<input type="checkbox" id="nav-toggle" class="nav-toggle-input" aria-hidden="true" />
-				<ul class="nav-links">
+				<!-- Mobile menu toggle — a real <button> (not a checkbox+label
+				     hack) so its expanded/collapsed state has proper ARIA
+				     semantics and its focus ring is visible; JS below toggles
+				     `aria-expanded` and the `.nav-open` class that drives the
+				     panel's CSS. -->
+				<button
+					type="button"
+					id="nav-toggle"
+					class="nav-toggle-label"
+					aria-expanded="false"
+					aria-controls="nav-links"
+					aria-label={t('nav.menu')}
+				>
+					<span></span><span></span><span></span>
+				</button>
+				<ul id="nav-links" class="nav-links">
 					<li><a href={localizePath('/tools/', lang)} aria-current={isCurrent(localizePath('/tools', lang)) ? 'page' : undefined}>{t('nav.tools')}</a></li>
 					<li><a href={localizePath('/faq/', lang)} aria-current={isCurrent(localizePath('/faq', lang)) ? 'page' : undefined}>{t('nav.faq')}</a></li>
 					<li><a href={localizePath('/about/', lang)} aria-current={isCurrent(localizePath('/about', lang)) ? 'page' : undefined}>{t('nav.about')}</a></li>
@@ -238,14 +256,11 @@ const ogImageAlt =
 					<a href={langSwitchHref} class="lang-switch" hreflang={lang === 'en' ? 'fr' : 'en'}>
 						{languages[lang === 'en' ? 'fr' : 'en']}
 					</a>
-					<label for="nav-toggle" class="nav-toggle-label" aria-label={t('nav.menu')}>
-						<span></span><span></span><span></span>
-					</label>
 				</div>
 			</nav>
 		</header>
 
-		<main>
+		<main id="main-content">
 			<slot />
 		</main>
 
@@ -329,6 +344,34 @@ const ogImageAlt =
 					}
 				}
 			});
+
+			// Mobile nav toggle — a real <button> instead of the previous
+			// checkbox+label hack, so state is exposed via `aria-expanded`
+			// rather than relying on assistive tech to interpret an
+			// aria-hidden checkbox. Closes on Escape or on selecting a link,
+			// both real keyboard-usability gaps the checkbox version had no
+			// way to fix.
+			(function () {
+				var toggle = document.getElementById('nav-toggle');
+				var nav = document.querySelector('.site-nav');
+				if (!toggle || !nav) return;
+				function setOpen(open) {
+					nav.classList.toggle('nav-open', open);
+					toggle.setAttribute('aria-expanded', String(open));
+				}
+				toggle.addEventListener('click', function () {
+					setOpen(!nav.classList.contains('nav-open'));
+				});
+				nav.querySelector('.nav-links').addEventListener('click', function (event) {
+					if (event.target.closest('a')) setOpen(false);
+				});
+				document.addEventListener('keydown', function (event) {
+					if (event.key === 'Escape' && nav.classList.contains('nav-open')) {
+						setOpen(false);
+						toggle.focus();
+					}
+				});
+			})();
 		</script>
 	</body>
 </html>
@@ -503,9 +546,42 @@ const ogImageAlt =
 	}
 
 	a:focus-visible,
-	button:focus-visible {
+	button:focus-visible,
+	input:focus-visible,
+	summary:focus-visible,
+	[tabindex]:focus-visible {
 		outline: 3px solid var(--accent-signature);
 		outline-offset: 2px;
+	}
+
+	/* A handful of controls (nav toggle's old checkbox, the Download page's
+	   OS radios) are visually-hidden inputs styled entirely via their
+	   sibling <label> — `opacity: 0` on the input itself also hides its
+	   native focus ring, so the visible label needs to carry it instead
+	   when the hidden input is the one that's actually focused. */
+	input:focus-visible + label {
+		outline: 3px solid var(--accent-signature);
+		outline-offset: 2px;
+	}
+
+	/* Skip link (WCAG 2.4.1) — visually hidden until it receives keyboard
+	   focus, then pinned to the top-left corner above everything else. */
+	.skip-link {
+		position: absolute;
+		top: -3rem;
+		left: var(--space-4);
+		z-index: 100;
+		background: var(--accent-signature);
+		color: #ffffff;
+		padding: var(--space-2) var(--space-4);
+		border-radius: var(--radius-default);
+		text-decoration: none;
+		font-weight: 600;
+		transition: top 0.15s ease;
+	}
+
+	.skip-link:focus {
+		top: var(--space-4);
 	}
 
 	/* Shared page-building blocks (Step 6.3) — kept here rather than
@@ -837,16 +913,12 @@ const ogImageAlt =
 		color: var(--text-primary);
 	}
 
-	/* Mobile nav — a checkbox-driven collapsible panel (landing-design.md §2's
+	/* Mobile nav — a JS-toggled collapsible panel (landing-design.md §2's
 	   "wordmark + Download + hamburger" mobile treatment). The hamburger's
 	   expanded state wasn't drawn in that mockup; this is a plain dropdown
-	   panel with the same links, not a re-decided design. */
-	.nav-toggle-input {
-		position: absolute;
-		opacity: 0;
-		pointer-events: none;
-	}
-
+	   panel with the same links, not a re-decided design. `#nav-toggle` is a
+	   real <button> (Step 6.9) — reset its browser-default appearance so it
+	   still looks like a bare hamburger icon. */
 	.nav-toggle-label {
 		display: none;
 		flex-direction: column;
@@ -854,6 +926,9 @@ const ogImageAlt =
 		gap: 4px;
 		width: 32px;
 		height: 32px;
+		padding: 0;
+		border: none;
+		background: none;
 		cursor: pointer;
 	}
 
@@ -881,7 +956,13 @@ const ogImageAlt =
 			border-bottom: 1px solid var(--border-hairline);
 			max-height: 0;
 			overflow: hidden;
-			transition: max-height 0.2s ease;
+			/* `visibility` is delayed on the way in and instant on the way
+			   out — collapsed links must leave the tab order the instant
+			   the panel closes (Step 6.9: they were previously still
+			   keyboard-focusable at max-height: 0, an invisible focus trap
+			   for keyboard users tabbing through a closed menu). */
+			visibility: hidden;
+			transition: max-height 0.2s ease, visibility 0s linear 0.2s;
 		}
 
 		.site-nav .nav-links li {
@@ -895,8 +976,10 @@ const ogImageAlt =
 			box-sizing: border-box;
 		}
 
-		#nav-toggle:checked ~ .nav-links {
+		.site-nav.nav-open .nav-links {
 			max-height: 16rem;
+			visibility: visible;
+			transition: max-height 0.2s ease;
 		}
 	}
 

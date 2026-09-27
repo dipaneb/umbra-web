@@ -16,6 +16,7 @@ export const defaultLang = 'en';
 
 export const ui = {
 	en: {
+		'a11y.skipToContent': 'Skip to content',
 		'nav.aria': 'Primary',
 		'nav.tools': 'Tools',
 		'nav.faq': 'FAQ',
@@ -49,6 +50,7 @@ export const ui = {
 		'notfound.download': 'Download',
 	},
 	fr: {
+		'a11y.skipToContent': 'Aller au contenu',
 		'nav.aria': 'Principale',
 		'nav.tools': 'Outils',
 		'nav.faq': 'FAQ',
