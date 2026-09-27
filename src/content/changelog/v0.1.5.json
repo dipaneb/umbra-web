@@ -1,0 +1,9 @@
+{
+	"fallbackDate": "2026-08-23T22:56:32Z",
+	"added": [
+		"French language support (Settings → Appearance)."
+	],
+	"fixed": [
+		"Update dialog's release-date formatting, duplicate release notes, and keyboard focus handling."
+	]
+}

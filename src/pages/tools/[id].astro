@@ -1,0 +1,26 @@
+---
+import { getCollection } from 'astro:content';
+import ToolPage from '../../components/ToolPage.astro';
+
+export async function getStaticPaths() {
+	const tools = await getCollection('tools');
+	return tools.map((tool) => ({
+		params: { id: tool.id },
+		props: { tool },
+	}));
+}
+
+const { tool } = Astro.props;
+const { name, seoTitle, seoDescription, directAnswer, body, screenshotSlug, screenshotAlt, faqs } = tool.data;
+---
+
+<ToolPage
+	title={seoTitle}
+	description={seoDescription}
+	name={name}
+	directAnswer={directAnswer}
+	body={body}
+	screenshotSlug={screenshotSlug}
+	screenshotAlt={screenshotAlt}
+	faqs={faqs}
+/>

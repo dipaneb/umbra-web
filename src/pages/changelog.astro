@@ -1,92 +1,51 @@
 ---
+import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 
 // Hybrid content model (landing-ia.md §5): version/date are read live from
 // the GitHub Releases API at build time; the Added/Changed/Fixed summaries
-// are curated by hand from each release's own notes, never auto-generated
-// from the raw body (Step 2.1's "like a language/framework changelog" call).
-// Only stable releases with a hand-written entry below are shown — pre-
-// releases and the three earliest tags (which shipped placeholder release
-// notes with nothing to categorize) are omitted rather than padded.
-const curated: Record<string, { added?: string[]; changed?: string[]; fixed?: string[] }> = {
-	'v0.4.0': {
-		added: [
-			'AVIF export and a live before/after comparison slider in Images.',
-			'PDF page-range extraction, and merging pages into an already-open document.',
-			"Update notifications show each release's notes in your own language.",
-		],
-		changed: [
-			'Images processes multiple files as an independent queue, with per-file progress, instead of one at a time.',
-			'Images can resize on export and set a background color for transparent-to-opaque conversions.',
-			'PDF shows real page previews.',
-		],
-		fixed: ['PDF handles malformed and hostile documents more safely; large documents merge and extract reliably.'],
-	},
-	'v0.3.0': {
-		added: [
-			'UUID format toggles (case, braces, hyphens) and bulk generation saved to a file.',
-			'Hash lets you choose which algorithms run and adds a Verify panel that checks a pasted digest against every selected algorithm.',
-			'JWT shows relative and absolute time for claims with a live-updating clock, and flags unsigned tokens.',
-			"Cron's guided builder replaces the old free-text description box, with a field-by-field breakdown.",
-		],
-		changed: [
-			'Image to Text overlays selectable text directly on the image instead of a separate box, and marks uncertain regions on the image itself.',
-			'Image to Text, PDF, and Images split out of the old "Bucket" grouping into their own sidebar tools.',
-			'Base64 converts live as you type, and builds and decodes data URIs in place.',
-		],
-		fixed: ['Image to Text no longer misreads sideways or rotated photos as "no text found."'],
-	},
-	'v0.2.1': {
-		added: [
-			'JSON tool rebuilt with six tabs — Explorer, Validate, Repair, Query, Diff, Transform.',
-			'JSON Repair previews a fix before applying it; Query runs JSONPath expressions; Diff compares by structure; Transform generates a matching TypeScript interface.',
-		],
-		changed: ['Umbra has a proper app icon, replacing the placeholder Tauri icon.'],
-		fixed: [
-			'Text fields no longer auto-convert straight quotes to curly ones.',
-			'Button and spacing inconsistencies across tools.',
-		],
-	},
-	'v0.1.5': {
-		added: ['French language support (Settings → Appearance).'],
-		fixed: [
-			"Update dialog's release-date formatting, duplicate release notes, and keyboard focus handling.",
-		],
-	},
-	'v0.1.4': {
-		fixed: ["Update dialog now shows each release's actual notes instead of the same placeholder text every time."],
-	},
-};
+// are curated by hand (src/content/changelog/*.json) and never auto-generated
+// from a release's raw body (Step 2.1's "like a language/framework changelog"
+// call) — a plausible-looking automated summary is still self-reported, just
+// by a script instead of a person.
+const curatedEntries = await getCollection('changelog');
+const curated = new Map(curatedEntries.map((entry) => [entry.id, entry.data]));
 
-// Static fallback (same dates GitHub reports as of this build) in case the
-// live fetch fails — e.g. an offline build — so the page still renders.
-const fallbackDates: Record<string, string> = {
-	'v0.4.0': '2026-09-15T22:55:09Z',
-	'v0.3.0': '2026-09-10T23:48:51Z',
-	'v0.2.1': '2026-08-27T21:56:51Z',
-	'v0.1.5': '2026-08-23T22:56:32Z',
-	'v0.1.4': '2026-08-18T23:23:33Z',
-};
-
-let dates = fallbackDates;
+let liveReleases: { tag: string; date: string }[] = [];
 try {
 	const res = await fetch('https://api.github.com/repos/dipaneb/umbra/releases');
 	if (res.ok) {
 		const data = await res.json();
-		const live: Record<string, string> = {};
-		for (const r of data) {
-			if (curated[r.tag_name]) live[r.tag_name] = r.published_at;
-		}
-		if (Object.keys(live).length > 0) dates = live;
+		liveReleases = data
+			.filter((r: { draft: boolean; prerelease: boolean }) => !r.draft && !r.prerelease)
+			.map((r: { tag_name: string; published_at: string }) => ({ tag: r.tag_name, date: r.published_at }));
 	}
 } catch {
-	// keep fallbackDates
+	// keep liveReleases empty — every entry below falls back to its own
+	// fallbackDate, so the page still renders for an offline build.
 }
+const liveDateByTag = new Map(liveReleases.map((r) => [r.tag, r.date]));
 
-const entries = Object.entries(curated)
-	.map(([tag, changes]) => ({ tag, date: dates[tag], ...changes }))
-	.filter((entry) => entry.date)
-	.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+const curatedDisplay = [...curated.entries()].map(([tag, data]) => ({
+	tag,
+	date: liveDateByTag.get(tag) ?? data.fallbackDate,
+	pending: false as const,
+	...data,
+}));
+
+// A live release newer than the newest curated entry is real curation lag —
+// shown as a visible "coming soon" gap rather than silently dropped or
+// blocking the build. A live release *older* than the curated range (the
+// three earliest tags, which shipped placeholder release notes with nothing
+// to categorize) stays omitted, matching this page's original deliberate cut.
+const newestCuratedTime = Math.max(...curatedDisplay.map((entry) => new Date(entry.date).getTime()));
+const pendingEntries = liveReleases
+	.filter((r) => !curated.has(r.tag) && new Date(r.date).getTime() > newestCuratedTime)
+	.map((r) => ({ tag: r.tag, date: r.date, pending: true as const }));
+
+const entries = [...curatedDisplay, ...pendingEntries].sort(
+	(a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+);
 
 function formatDate(iso: string) {
 	// UTC explicitly — this runs at build time, and the release date shouldn't
@@ -109,23 +68,29 @@ function formatDate(iso: string) {
 					<h2>
 						{entry.tag} — {formatDate(entry.date)}
 					</h2>
-					{entry.added && (
-						<div class="category">
-							<h3>Added</h3>
-							<ul>{entry.added.map((line) => <li>{line}</li>)}</ul>
-						</div>
-					)}
-					{entry.changed && (
-						<div class="category">
-							<h3>Changed</h3>
-							<ul>{entry.changed.map((line) => <li>{line}</li>)}</ul>
-						</div>
-					)}
-					{entry.fixed && (
-						<div class="category">
-							<h3>Fixed</h3>
-							<ul>{entry.fixed.map((line) => <li>{line}</li>)}</ul>
-						</div>
+					{entry.pending ? (
+						<p class="pending-note">Release notes coming soon.</p>
+					) : (
+						<>
+							{entry.added && (
+								<div class="category">
+									<h3>Added</h3>
+									<ul>{entry.added.map((line) => <li>{line}</li>)}</ul>
+								</div>
+							)}
+							{entry.changed && (
+								<div class="category">
+									<h3>Changed</h3>
+									<ul>{entry.changed.map((line) => <li>{line}</li>)}</ul>
+								</div>
+							)}
+							{entry.fixed && (
+								<div class="category">
+									<h3>Fixed</h3>
+									<ul>{entry.fixed.map((line) => <li>{line}</li>)}</ul>
+								</div>
+							)}
+						</>
 					)}
 				</article>
 			))
@@ -163,5 +128,10 @@ function formatDate(iso: string) {
 
 	.full-notes {
 		margin-top: var(--space-8);
+	}
+
+	.pending-note {
+		color: var(--text-secondary);
+		font-style: italic;
 	}
 </style>

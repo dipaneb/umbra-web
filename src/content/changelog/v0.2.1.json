@@ -1,0 +1,14 @@
+{
+	"fallbackDate": "2026-08-27T21:56:51Z",
+	"added": [
+		"JSON tool rebuilt with six tabs — Explorer, Validate, Repair, Query, Diff, Transform.",
+		"JSON Repair previews a fix before applying it; Query runs JSONPath expressions; Diff compares by structure; Transform generates a matching TypeScript interface."
+	],
+	"changed": [
+		"Umbra has a proper app icon, replacing the placeholder Tauri icon."
+	],
+	"fixed": [
+		"Text fields no longer auto-convert straight quotes to curly ones.",
+		"Button and spacing inconsistencies across tools."
+	]
+}

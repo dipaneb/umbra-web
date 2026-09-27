@@ -1,17 +1,8 @@
 ---
+import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 
-const tools = [
-	{ slug: 'json', icon: '{ }', name: 'JSON', blurb: 'Format, validate, explore, diff, and repair JSON.' },
-	{ slug: 'base64', icon: '64', name: 'Base64', blurb: 'Encode and decode text or files, including drag-and-drop.' },
-	{ slug: 'uuid', icon: 'ID', name: 'UUID', blurb: 'Generate v4 or v7 identifiers, one at a time or in bulk.' },
-	{ slug: 'hash', icon: '#', name: 'Hash', blurb: 'Compute SHA-2, SHA-3, MD5, and SHA-1 digests of text or a file.' },
-	{ slug: 'jwt', icon: 'JWT', name: 'JWT', blurb: "Decode a token's header and payload — reads, doesn't verify." },
-	{ slug: 'cron', icon: 'CRN', name: 'Cron', blurb: 'Build a 5-field cron expression with a guided grid.' },
-	{ slug: 'ocr', icon: 'OCR', name: 'Image to Text', blurb: 'Pull text out of a screenshot or scan with a bundled AI model.' },
-	{ slug: 'pdf', icon: 'PDF', name: 'PDF', blurb: 'Merge, reorder, rotate, delete, and read text from PDF pages.' },
-	{ slug: 'image', icon: 'IMG', name: 'Images', blurb: 'Convert, resize, and compress PNG, JPEG, WebP, and AVIF.' },
-];
+const tools = (await getCollection('tools')).sort((a, b) => a.data.order - b.data.order);
 ---
 
 <Layout
@@ -29,12 +20,12 @@ const tools = [
 			{
 				tools.map((tool) => (
 					<li class="card">
-						<a class="card-link" href={`/tools/${tool.slug}/`}>
+						<a class="card-link" href={`/tools/${tool.id}/`}>
 							<span class="tool-icon" aria-hidden="true">
-								{tool.icon}
+								{tool.data.icon}
 							</span>
-							<h3>{tool.name}</h3>
-							<p>{tool.blurb}</p>
+							<h3>{tool.data.name}</h3>
+							<p>{tool.data.hubBlurb}</p>
 						</a>
 					</li>
 				))

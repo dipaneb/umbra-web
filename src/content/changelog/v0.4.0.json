@@ -1,0 +1,16 @@
+{
+	"fallbackDate": "2026-09-15T22:55:09Z",
+	"added": [
+		"AVIF export and a live before/after comparison slider in Images.",
+		"PDF page-range extraction, and merging pages into an already-open document.",
+		"Update notifications show each release's notes in your own language."
+	],
+	"changed": [
+		"Images processes multiple files as an independent queue, with per-file progress, instead of one at a time.",
+		"Images can resize on export and set a background color for transparent-to-opaque conversions.",
+		"PDF shows real page previews."
+	],
+	"fixed": [
+		"PDF handles malformed and hostile documents more safely; large documents merge and extract reliably."
+	]
+}

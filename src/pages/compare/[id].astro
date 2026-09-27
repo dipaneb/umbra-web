@@ -1,0 +1,29 @@
+---
+import { getCollection } from 'astro:content';
+import ComparePage from '../../components/ComparePage.astro';
+
+export async function getStaticPaths() {
+	const comparisons = await getCollection('comparisons');
+	const sorted = comparisons.sort((a, b) => a.data.order - b.data.order);
+	return sorted.map((comparison) => ({
+		params: { id: comparison.id },
+		props: {
+			comparison,
+			others: sorted.filter((c) => c.id !== comparison.id).map((c) => ({ name: c.data.competitorName, slug: c.id })),
+		},
+	}));
+}
+
+const { comparison, others } = Astro.props;
+const { competitorName, seoTitle, seoDescription, intro, rows, verdict } = comparison.data;
+---
+
+<ComparePage
+	title={seoTitle}
+	description={seoDescription}
+	competitorName={competitorName}
+	intro={intro}
+	rows={rows}
+	verdict={verdict}
+	others={others}
+/>

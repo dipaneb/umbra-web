@@ -1,0 +1,28 @@
+{
+	"name": "JSON",
+	"order": 1,
+	"icon": "{ }",
+	"searchTerms": "json format formatter formateur",
+	"hubBlurb": "Format, validate, explore, diff, and repair JSON.",
+	"tileDescription": "Format, validate, and explore JSON as a collapsible tree.",
+	"seoTitle": "JSON Formatter, Validator & Diff — Offline",
+	"seoDescription": "Format, validate, explore, diff, and repair JSON entirely offline. No payload ever leaves your machine.",
+	"directAnswer": "Umbra's JSON tool formats, validates, and explores JSON entirely offline — nothing you paste here is ever sent anywhere.",
+	"body": "Paste any JSON to format it with your choice of indentation, or minify it to one line. Explore the result as a collapsible tree with search, run a JSONPath query against it, diff two documents side by side, or generate a matching TypeScript interface — all without the payload leaving your machine.",
+	"screenshotSlug": "json",
+	"screenshotAlt": "Umbra's JSON tool showing a request payload in the Explorer tab's searchable tree view.",
+	"faqs": [
+		{
+			"q": "Why not just use a free online JSON formatter?",
+			"a": "Because pasting a payload into a web tool means it left your machine, even if only for a second — and you have no way to verify what that server did with it. Umbra's JSON tool never sends anything anywhere."
+		},
+		{
+			"q": "Can it fix invalid JSON, not just flag it?",
+			"a": "Yes — the Repair tab suggests fixes for common mistakes and shows a preview before you apply them; if a document is too broken to fix automatically, it says so rather than guessing."
+		},
+		{
+			"q": "Is there a JSON formatter that fixes broken JSON, not just formats valid JSON?",
+			"a": "Most free JSON formatters — including the ones built into DevUtils and DevToys — validate and flag an error; they don't offer to fix it. Umbra's Repair tab suggests fixes for common mistakes (a missing comma, an unquoted key) and shows a preview before you apply anything."
+		}
+	]
+}
