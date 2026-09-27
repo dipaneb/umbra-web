@@ -1,0 +1,129 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const tools = [
+	{ slug: 'json', icon: '{ }', name: 'JSON', blurb: 'Format, validate, explore, diff, and repair JSON.' },
+	{ slug: 'base64', icon: '64', name: 'Base64', blurb: 'Encode and decode text or files, including drag-and-drop.' },
+	{ slug: 'uuid', icon: 'ID', name: 'UUID', blurb: 'Generate v4 or v7 identifiers, one at a time or in bulk.' },
+	{ slug: 'hash', icon: '#', name: 'Hash', blurb: 'Compute SHA-2, SHA-3, MD5, and SHA-1 digests of text or a file.' },
+	{ slug: 'jwt', icon: 'JWT', name: 'JWT', blurb: "Decode a token's header and payload — reads, doesn't verify." },
+	{ slug: 'cron', icon: 'CRN', name: 'Cron', blurb: 'Build a 5-field cron expression with a guided grid.' },
+	{ slug: 'ocr', icon: 'OCR', name: 'Image to Text', blurb: 'Pull text out of a screenshot or scan with a bundled AI model.' },
+	{ slug: 'pdf', icon: 'PDF', name: 'PDF', blurb: 'Merge, reorder, rotate, delete, and read text from PDF pages.' },
+	{ slug: 'image', icon: 'IMG', name: 'Images', blurb: 'Convert, resize, and compress PNG, JPEG, WebP, and AVIF.' },
+];
+---
+
+<Layout
+	title="Tools"
+	description="Nine everyday developer tools — JSON, Base64, UUID, Hash, JWT, Cron, Image to Text, PDF, Images — in one offline app."
+>
+	<section class="section container tools-hub">
+		<h1>Tools</h1>
+		<p class="page-lede">
+			Nine everyday developer tools, bundled into one local app. Press ⌘K from anywhere in Umbra to
+			jump straight to any of them.
+		</p>
+
+		<ul class="card-grid">
+			{
+				tools.map((tool) => (
+					<li class="card">
+						<a class="card-link" href={`/tools/${tool.slug}/`}>
+							<span class="tool-icon" aria-hidden="true">
+								{tool.icon}
+							</span>
+							<h3>{tool.name}</h3>
+							<p>{tool.blurb}</p>
+						</a>
+					</li>
+				))
+			}
+		</ul>
+
+		<div class="prose wider-comparison">
+			<h2>A wider comparison</h2>
+			<p class="section-lede" style="text-align: left; margin-left: 0;">
+				Not just the three named desktop competitors, but the two other categories the same
+				decision usually comes down to. See the individual write-ups: <a href="/compare/devtoys/">DevToys</a>,{' '}
+				<a href="/compare/devutils/">DevUtils</a>, <a href="/compare/devtools-x/">DevTools-X</a>,{' '}
+				<a href="/compare/cyberchef/">CyberChef</a>.
+			</p>
+			<table class="compare-table">
+				<thead>
+					<tr>
+						<th scope="col"></th>
+						<th scope="col">Umbra</th>
+						<th scope="col">Web-based tools</th>
+						<th scope="col">Other desktop toolboxes</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<th scope="row">Where your data goes</th>
+						<td>Stays on your machine. One disclosed exception: an automatic check for app updates, at launch.</td>
+						<td>Sent to a server you don't control, even if only for a second.</td>
+						<td>Local, for the tools that are — check each one; "desktop" doesn't guarantee offline-only.</td>
+					</tr>
+					<tr>
+						<th scope="row">How you can verify that</th>
+						<td>A documented, repeatable network-monitor check you run yourself.</td>
+						<td>No way to verify — you're trusting the server operator.</td>
+						<td>States the claim in a sentence; no published verification mechanism found for DevToys, DevUtils, or DevTools-X as of 2026-09-19.</td>
+					</tr>
+					<tr>
+						<th scope="row">Works without an internet connection</th>
+						<td>Yes — a native app, no server dependency.</td>
+						<td>No — needs a live connection to the tool's own server.</td>
+						<td>Yes, once installed.</td>
+					</tr>
+					<tr>
+						<th scope="row">Cost</th>
+						<td>Free, no account.</td>
+						<td>Usually free, often ad-supported.</td>
+						<td>Free (DevToys, DevTools-X) or paid (DevUtils).</td>
+					</tr>
+					<tr>
+						<th scope="row">Local AI feature</th>
+						<td>Yes — offline OCR (Image to Text), a bundled model, nothing uploaded.</td>
+						<td>N/A.</td>
+						<td>None found, across DevToys, DevUtils, or DevTools-X, as of 2026-09-19.</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</section>
+</Layout>
+
+<style>
+	.tools-hub {
+		max-width: var(--max-width);
+	}
+
+	.page-lede {
+		max-width: 40rem;
+	}
+
+	.tool-icon {
+		display: inline-block;
+		font-family: var(--font-mono);
+		font-size: var(--type-caption);
+		font-weight: 700;
+		letter-spacing: 0.03em;
+		background: var(--bg-base);
+		border: 1px solid var(--border-hairline);
+		border-radius: var(--radius-sm);
+		padding: 0.2rem 0.5rem;
+		margin-bottom: var(--space-3);
+	}
+
+	.wider-comparison {
+		margin-top: var(--space-16);
+		max-width: 100%;
+	}
+
+	.wider-comparison .compare-table td,
+	.wider-comparison .compare-table th {
+		font-size: 0.92rem;
+	}
+</style>

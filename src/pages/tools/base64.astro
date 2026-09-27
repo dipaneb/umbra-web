@@ -1,0 +1,29 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+
+const faqs = [
+	{
+		q: 'Why not use a free online Base64 decoder?',
+		a: "You can't verify what a server does with what you send it; Umbra decodes and encodes locally, including files dropped directly onto the window.",
+	},
+	{
+		q: "Does it detect what I've decoded?",
+		a: 'Yes — a JWT, an image, or a recognizable binary format is shown accordingly, not just as raw bytes.',
+	},
+	{
+		q: 'Is there a Base64 decoder that tells me what I just decoded?',
+		a: 'Most free Base64 tools split text and image decoding into two separate tools, so you have to already know which one to open. Umbra decodes into one tool and shows you what it found — a JWT, an image, or an unrecognized binary — rather than making you guess first.',
+	},
+];
+---
+
+<ToolPage
+	title="Base64 Encoder & Decoder — Offline"
+	description="Encode or decode text and files to Base64 entirely offline, including drag-and-drop. Nothing you paste ever leaves your machine."
+	name="Base64"
+	directAnswer="Umbra's Base64 tool encodes and decodes text or files entirely offline — nothing you drop or paste ever leaves your machine."
+	body="Paste text to encode or decode it, with a URL-safe alphabet option, or drop a file directly onto the window to Base64-encode it. Decoding recognizes what it finds — a JWT, an image, a binary file — and shows it accordingly instead of just dumping raw bytes."
+	screenshotSlug="base64"
+	screenshotAlt="Umbra's Base64 tool encoding a header value, with a drop zone for files above the text input."
+	faqs={faqs}
+/>

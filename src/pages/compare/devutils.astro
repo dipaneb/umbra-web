@@ -1,0 +1,41 @@
+---
+import ComparePage from '../../components/ComparePage.astro';
+
+const rows = [
+	{
+		label: 'Price',
+		umbra: 'Free, no account',
+		competitor: 'Paid (perpetual/team licences; exact price not published on its own site as of 2026-09-19)',
+	},
+	{
+		label: 'Platforms',
+		umbra: 'macOS (signed, notarized), Windows & Linux (best-effort)',
+		competitor: 'macOS only (10.13+, Intel & Apple Silicon)',
+	},
+	{ label: 'Tools', umbra: '9', competitor: '47+' },
+	{ label: 'Source', umbra: 'Source-available (public, All Rights Reserved)', competitor: 'Proprietary — source not published' },
+	{
+		label: 'Privacy verification',
+		umbra: 'A documented, repeatable network-monitor check you can run yourself',
+		competitor:
+			'States "everything you paste into the app never leaves your machine"; no published verification mechanism found as of 2026-09-19',
+	},
+	{ label: 'Local AI feature', umbra: 'Yes — offline OCR (Image to Text)', competitor: 'None found as of 2026-09-19' },
+];
+
+const others = [
+	{ name: 'DevToys', slug: 'devtoys' },
+	{ name: 'DevTools-X', slug: 'devtools-x' },
+	{ name: 'CyberChef', slug: 'cyberchef' },
+];
+---
+
+<ComparePage
+	title="Umbra vs. DevUtils — Compared"
+	description="How Umbra compares to DevUtils on price, platforms, tools, source, and privacy verification. Checked 2026-09-19."
+	competitorName="DevUtils"
+	intro="DevUtils is the established, paid, macOS-only alternative to Umbra. Here's how the two compare, checked 2026-09-19."
+	rows={rows}
+	verdict="DevUtils has far more tools and years of polish on a single platform — if you're macOS-only and don't mind paying, it's a mature, well-regarded choice. It makes almost the same “never leaves your machine” claim Umbra does — but asserts it once, in a sentence, rather than publishing a way to check it. Umbra is free, runs on three platforms instead of one, and ships a local AI feature DevUtils doesn't have as of this writing."
+	others={others}
+/>

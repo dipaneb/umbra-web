@@ -1,0 +1,29 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+
+const faqs = [
+	{
+		q: 'Why not convert images with a free online converter?',
+		a: 'An image can carry as much personal information as a document; uploading it just to change a file extension means trusting a server with all of that.',
+	},
+	{
+		q: 'Can I convert several images at once?',
+		a: "Yes — drop as many as you like; each file's progress is shown individually.",
+	},
+	{
+		q: 'Can it convert images to AVIF or WebP, not just PNG and JPEG?',
+		a: "Yes — DevUtils has no general image converter, and DevToys' image tool is currently PNG/JPEG only (AVIF/WebP support is an open feature request as of this writing). Umbra converts to PNG, JPEG, WebP, or AVIF today.",
+	},
+];
+---
+
+<ToolPage
+	title="Image Converter (PNG, JPEG, WebP, AVIF)"
+	description="Convert, resize, and compress PNG, JPEG, WebP, and AVIF images entirely offline, with live before/after comparison."
+	name="Images"
+	directAnswer="Umbra's Images tool converts, resizes, and compresses PNG, JPEG, WebP, and AVIF files — entirely offline."
+	body="Drop one or several images to convert them to your target format, resize them with a locked aspect ratio, and adjust quality with a live before/after comparison — including a background color for formats without transparency. Batch conversions show progress per file, not one spinner for the whole queue."
+	screenshotSlug="images"
+	screenshotAlt="Umbra's Images tool converting a file to AVIF, showing the size reduction from the original."
+	faqs={faqs}
+/>

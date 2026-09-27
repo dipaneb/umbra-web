@@ -1,0 +1,88 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+interface FaqItem {
+	q: string;
+	a: string;
+}
+
+interface Props {
+	title: string;
+	description: string;
+	name: string;
+	directAnswer: string;
+	body: string;
+	screenshotSlug: string;
+	screenshotAlt: string;
+	faqs: FaqItem[];
+}
+
+const { title, description, name, directAnswer, body, screenshotSlug, screenshotAlt, faqs } = Astro.props;
+---
+
+<Layout title={title} description={description}>
+	<section class="section container prose tool-page">
+		<a class="back-link" href="/tools/">← All tools</a>
+		<h1>{name}</h1>
+		<p class="direct-answer"><strong>{directAnswer}</strong></p>
+		<p>{body}</p>
+
+		<picture>
+			<source srcset={`/images/tools/${screenshotSlug}-dark.webp`} media="(prefers-color-scheme: dark)" />
+			<img
+				src={`/images/tools/${screenshotSlug}-light.webp`}
+				alt={screenshotAlt}
+				width="1600"
+				height="1200"
+				loading="lazy"
+				class="tool-screenshot"
+			/>
+		</picture>
+
+		<a class="button" href="/download/" data-analytics="download_clicked">Download</a>
+
+		<h2>FAQ</h2>
+		<ul class="faq-list">
+			{
+				faqs.map((item) => (
+					<li>
+						<details>
+							<summary><h3>{item.q}</h3></summary>
+							<p class="answer" set:html={item.a} />
+						</details>
+					</li>
+				))
+			}
+		</ul>
+	</section>
+</Layout>
+
+<style>
+	.tool-page {
+		max-width: 42rem;
+	}
+
+	.direct-answer {
+		font-size: var(--type-body-lead);
+	}
+
+	.tool-screenshot {
+		display: block;
+		width: 100%;
+		height: auto;
+		border-radius: var(--radius-lg);
+		border: 1px solid var(--border-hairline);
+		margin: var(--space-8) 0;
+	}
+
+	.tool-page .button {
+		margin-bottom: var(--space-10);
+	}
+
+	.faq-list summary h3 {
+		display: inline;
+		font-family: var(--font-sans);
+		font-size: 1rem;
+		font-weight: 600;
+	}
+</style>

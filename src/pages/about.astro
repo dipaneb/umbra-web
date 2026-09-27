@@ -1,0 +1,46 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+	title="About Umbra — Built by One Developer"
+	description="Umbra is built and maintained by a single developer. Here's what that means for speed, privacy, and testing."
+	rawTitle
+>
+	<section class="section container prose about-page">
+		<h1>
+			Umbra is a small, local-first toolbox for the tools developers reach for every day — built to
+			run entirely on your machine, with nothing else assumed.
+		</h1>
+
+		<p>
+			<strong>It's fast because there's no browser bundled inside it.</strong> A native Rust core
+			drives the app directly — unlike an Electron-style app, it doesn't ship its own copy of
+			Chromium — so it opens and responds like a small program should.
+		</p>
+		<p>
+			<strong>The Mac build is checked by Apple before you ever see it.</strong> Signed with a
+			Developer ID certificate and notarized by Apple.
+		</p>
+		<p>
+			<strong>Nothing you use it for is sent anywhere.</strong> The app makes no network calls except
+			one, disclosed — the check for a new version — and you can confirm it yourself with a network
+			monitor while it runs.
+		</p>
+		<p>
+			<strong>Windows and Linux are labeled honestly, not oversold.</strong> They work, but they're
+			tested less than the macOS build, and that's said plainly rather than implied otherwise.
+		</p>
+	</section>
+</Layout>
+
+<style>
+	.about-page {
+		max-width: 38rem;
+	}
+
+	.about-page h1 {
+		font-size: var(--type-h1);
+		margin-bottom: var(--space-10);
+	}
+</style>

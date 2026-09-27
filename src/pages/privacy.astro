@@ -1,0 +1,98 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+	title="Privacy Policy"
+	description="What the Umbra website collects and doesn't: cookieless analytics, no session recording, no email capture."
+>
+	<section class="section container prose legal-page">
+		<h1>Privacy policy</h1>
+		<p class="page-lede">Last updated: <!-- TODO(developer): set at launch --> to be set at launch.</p>
+
+		<h2>What this page covers</h2>
+		<p>
+			This policy covers only this website (umbra-web) and the anonymous analytics it collects
+			about visits to it. It does not cover the Umbra desktop application, which is a separate
+			product with its own, much stricter privacy disclosure — see the{' '}
+			<a href="/faq/#update-check-vs-zero-network-calls">FAQ</a> and the app's own README for that
+			claim. Nothing you do inside the Umbra app is described by this page.
+		</p>
+
+		<h2>Data collected</h2>
+		<p>
+			This site uses <a href="https://posthog.com">PostHog</a>, hosted in the EU, for anonymous
+			page-view analytics. Session recording and autocapture are both turned off. With that
+			configuration, visiting this site can generate the following data:
+		</p>
+		<ul>
+			<li>The page path and URL you viewed, and the page you came from, if any</li>
+			<li>
+				Your browser, operating system, device type, and screen size, read from standard browser
+				information — not from a fingerprinting script
+			</li>
+			<li>
+				If you click "Download," which platform you selected (macOS, Windows, or Linux) — this
+				tells us which platform to prioritize, not who you are
+			</li>
+			<li>If you click "Watch on GitHub" — again, only that the click happened</li>
+			<li>Standard analytics metadata: a timestamp and an event name for each of the above</li>
+		</ul>
+		<p>
+			<em
+				>Unconfirmed, checked before launch: whether this site's PostHog project stores the IP
+				address your browser connects from. PostHog disables this by default for new EU-hosted
+				projects, but it's a project setting, not something this page's authors can verify from the
+				site's published code — this line will be resolved, one way or the other, before this
+				policy ships.</em
+			>
+		</p>
+
+		<h2>What's not collected</h2>
+		<ul>
+			<li>No cookies</li>
+			<li>No session recordings, no screen replays, no autocapture of clicks or form fields</li>
+			<li>No cross-site tracking, no advertising identifiers, nothing shared with ad networks</li>
+			<li>No account, no email address, no name — this site has no sign-up, login, or newsletter</li>
+			<li>No data leaves the EU for this site's own analytics — the PostHog project we use is EU-hosted</li>
+		</ul>
+
+		<h2>Legal basis & your rights</h2>
+		<p>
+			We process this data under "legitimate interest" (GDPR Article 6(1)(f)): it's limited to
+			anonymous, aggregate measurement of how this site is used, for our own use only, and isn't
+			combined with any other data source or used to track you elsewhere.
+		</p>
+		<p>
+			You have the right, under GDPR, to access, correct, or request deletion of data held about
+			you, to object to this processing, and to lodge a complaint with the CNIL (cnil.fr), the
+			French data protection authority. In practice, because this analytics has no account, email,
+			or persistent identifier tied to it, there is usually nothing we can look up against your
+			specific identity even on request — that's a consequence of collecting less, not a way of
+			avoiding these rights. If you believe we hold something identifiable about you, or have any
+			other question, contact us below.
+		</p>
+
+		<h2>Data controller & contact</h2>
+		<!-- TODO(developer): a non-personal contact channel — see landing-legal.md §1's own open item,
+		     shared with /legal and /eula's Contact sections. -->
+		<p>Contact details to be added.</p>
+
+		<h2>Changes to this policy</h2>
+		<p>
+			This page is updated whenever what we collect changes — for example, when a new analytics
+			event ships. Changes are dated at the top of this page.
+		</p>
+	</section>
+</Layout>
+
+<style>
+	.legal-page {
+		max-width: 38rem;
+	}
+
+	.legal-page h1,
+	.legal-page h2 {
+		text-align: left;
+	}
+</style>

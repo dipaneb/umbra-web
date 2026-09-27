@@ -1,0 +1,64 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+	title="Legal Notice"
+	description="Publisher identity, hosting provider, and intellectual-property status for the Umbra website, per French law."
+>
+	<section class="section container prose legal-page">
+		<h1>Legal notice</h1>
+		<p class="page-lede">Last updated: <!-- TODO(developer): set at launch --> to be set at launch.</p>
+
+		<h2>Publisher</h2>
+		<p>
+			This site is published on a non-professional, non-commercial basis by an individual, under
+			Article 1-1, II of French law n° 2004-575 of 21 June 2004 ("LCEN"). That provision lets a
+			non-professional publisher keep their own identity off this page and disclose only their
+			hosting provider's details instead — the option used here. The site's operator has given
+			their real identity to the hosting provider directly, as the law requires; it is not
+			published on this page, and can only be disclosed by the host to a judicial authority, never
+			on request.
+		</p>
+
+		<h2>Hosting provider</h2>
+		<p>
+			Vercel Inc.<br />
+			440 N Barranca Avenue #4133<br />
+			Covina, CA 91723<br />
+			United States
+		</p>
+
+		<h2>Contact</h2>
+		<!-- TODO(developer): shared with /privacy's "Data controller & contact" — one decision, two pages. -->
+		<p>Contact details to be added.</p>
+
+		<h2>Intellectual property</h2>
+		<p>
+			Umbra's source code is public and readable at{' '}
+			<a href="https://github.com/dipaneb/umbra">github.com/dipaneb/umbra</a>, but it is not open
+			source: the repository is source-available, All Rights Reserved. You may read the code to
+			verify how the app works. You may not copy, modify, merge, publish, distribute, sublicense,
+			or sell it, in whole or in part, without the copyright holder's prior written consent — see
+			the repository's <code>LICENSE</code> file for the full terms. The separate{' '}
+			<a href="/eula/">end-user licence</a> governs downloading and running the compiled application,
+			not the source code itself.
+		</p>
+		<p>
+			This page concerns only the publication of this website. It says nothing about the Umbra
+			desktop application's own data practices — see the <a href="/privacy/">Privacy policy</a> and
+			the application's own README for that.
+		</p>
+	</section>
+</Layout>
+
+<style>
+	.legal-page {
+		max-width: 38rem;
+	}
+
+	.legal-page h1,
+	.legal-page h2 {
+		text-align: left;
+	}
+</style>

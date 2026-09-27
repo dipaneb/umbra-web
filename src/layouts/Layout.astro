@@ -4,11 +4,25 @@ import { Font } from 'astro:assets';
 interface Props {
 	title?: string;
 	description?: string;
+	noindex?: boolean;
+	/** Use `title` verbatim as the full <title> tag, skipping the Home/other-page
+	 * wrapping convention below — for the two pages (Download, About) whose
+	 * locked SEO title already reads naturally with "Umbra" mid-string rather
+	 * than as a " — Umbra" suffix (landing-copy.md §7 Part 1). */
+	rawTitle?: boolean;
 }
 
-const { title = 'Home', description = 'Umbra: privacy-first developer tools that don\'t phone home.' } = Astro.props;
+const {
+	title = 'Home',
+	description = 'Umbra: privacy-first developer tools that don\'t phone home.',
+	noindex = false,
+	rawTitle = false,
+} = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const isProd = import.meta.env.PROD;
+const isHome = Astro.url.pathname === '/';
+// Home is the brand — `Umbra — {value}`; every other page is `{value} — Umbra` (landing-copy.md §7).
+const pageTitle = rawTitle ? title : isHome ? `Umbra — ${title}` : `${title} — Umbra`;
 
 const isCurrent = (href: string) => Astro.url.pathname === href || Astro.url.pathname === `${href}/`;
 ---
@@ -23,12 +37,13 @@ const isCurrent = (href: string) => Astro.url.pathname === href || Astro.url.pat
 		<link rel="manifest" href="/site.webmanifest" />
 		<meta name="generator" content={Astro.generator} />
 
-		<title>{title} — Umbra</title>
+		<title>{pageTitle}</title>
 		<meta name="description" content={description} />
 		<link rel="canonical" href={canonicalURL} />
+		{noindex && <meta name="robots" content="noindex, follow" />}
 
 		<meta property="og:type" content="website" />
-		<meta property="og:title" content={`${title} — Umbra`} />
+		<meta property="og:title" content={pageTitle} />
 		<meta property="og:description" content={description} />
 		<meta property="og:url" content={canonicalURL} />
 
@@ -113,11 +128,26 @@ const isCurrent = (href: string) => Astro.url.pathname === href || Astro.url.pat
 					<img class="brand-mark" src="/favicon.svg" width="24" height="24" alt="" />
 					Umbra
 				</a>
-				<ul>
-					<li><a href="/" aria-current={isCurrent('/') ? 'page' : undefined}>Home</a></li>
-					<li><a href="/faq" aria-current={isCurrent('/faq') ? 'page' : undefined}>FAQ</a></li>
-					<li><a href="/download" class="cta" aria-current={isCurrent('/download') ? 'page' : undefined}>Download</a></li>
+				<input type="checkbox" id="nav-toggle" class="nav-toggle-input" aria-hidden="true" />
+				<ul class="nav-links">
+					<li><a href="/tools/" aria-current={isCurrent('/tools') ? 'page' : undefined}>Tools</a></li>
+					<li><a href="/faq/" aria-current={isCurrent('/faq') ? 'page' : undefined}>FAQ</a></li>
+					<li><a href="/about/" aria-current={isCurrent('/about') ? 'page' : undefined}>About</a></li>
 				</ul>
+				<div class="nav-actions">
+					<a
+						id="nav-download-btn"
+						href="/download/"
+						class="cta"
+						aria-current={isCurrent('/download') ? 'page' : undefined}
+						data-analytics="download_clicked"
+					>
+						Download
+					</a>
+					<label for="nav-toggle" class="nav-toggle-label" aria-label="Menu">
+						<span></span><span></span><span></span>
+					</label>
+				</div>
 			</nav>
 		</header>
 
@@ -126,17 +156,70 @@ const isCurrent = (href: string) => Astro.url.pathname === href || Astro.url.pat
 		</main>
 
 		<footer class="site-footer">
-			<img class="footer-mark" src="/favicon.svg" width="20" height="20" alt="" />
-			<p>
-				Umbra's code is public — <a href="https://github.com/dipaneb/umbra">read it on GitHub</a> — but it's
-				not open source; the license is All Rights Reserved.
+			<img class="footer-mark" src="/favicon.svg" width="20" height="20" alt="" loading="lazy" decoding="async" />
+			<nav class="footer-links" aria-label="Footer">
+				<a href="/faq/">FAQ</a>
+				<a href="/privacy/">Privacy</a>
+				<a href="/legal/">Legal notice</a>
+				<a href="/eula/">EULA</a>
+				<a href="/changelog/">Changelog</a>
+				<a href="/about/">About</a>
+			</nav>
+			<p class="footer-compare">
+				Compare: <a href="/compare/devtoys/">DevToys</a> · <a href="/compare/devutils/">DevUtils</a> ·{' '}
+				<a href="/compare/devtools-x/">DevTools-X</a> · <a href="/compare/cyberchef/">CyberChef</a>
 			</p>
+			<!-- TODO(developer): real name — CLAUDE.md's privacy rule blocks committing one here;
+			     see landing-copy.md §4 "About" section for the intended wording. -->
+			<p>Hey — I'm the developer, the one person building and maintaining Umbra.</p>
 			<p>
-				This site (umbra-web) uses <a href="https://posthog.com">PostHog</a> for anonymous page-view
-				analytics only, with session recording disabled. The Umbra app itself sends no analytics of
-				any kind — see the <a href="/faq#analytics">FAQ</a> for details.
+				Umbra collects anonymous page-view and download-intent analytics only. No cookies, no session
+				recording.
 			</p>
+			<p>Source-available, not open source. See the <a href="/eula/">EULA</a>.</p>
+			<p>
+				<a href="https://github.com/dipaneb/umbra" data-analytics="notify_me_clicked">Watch on GitHub</a>{' '}
+				to get notified about new releases.
+			</p>
+			<p class="footer-copyright">© 2026 Umbra.</p>
 		</footer>
+
+		<!--
+			Delegated analytics click handler (AC3/INV-2 event plan, landing-strategy.md §4).
+			Any element with `data-analytics="event_name"` fires that PostHog event on click;
+			`data-analytics-props='{"key":"value"}'` is merged in as event properties. Delegated
+			at document level so it also covers elements injected by page-level scripts (e.g. the
+			download page's live per-platform buttons).
+		-->
+		<script is:inline>
+			function guessPlatform() {
+				var ua = navigator.userAgent;
+				if (/Mac/.test(ua)) return 'macos';
+				if (/Win/.test(ua)) return 'windows';
+				if (/Linux/.test(ua)) return 'linux';
+				return 'unknown';
+			}
+
+			document.addEventListener('click', function (event) {
+				var el = event.target.closest('[data-analytics]');
+				if (!el || !window.posthog) return;
+				var props = {};
+				if (el.dataset.analyticsProps) {
+					try {
+						props = JSON.parse(el.dataset.analyticsProps);
+					} catch (e) {
+						/* malformed props — send the event without them rather than drop it */
+					}
+				}
+				// Nav/hero/closing-CTA "Download" links go to /download rather than a specific
+				// asset, so they don't know which platform yet — best-effort guess from the UA,
+				// same purpose ledger row 7's live per-platform logic serves on /download itself.
+				if (el.dataset.analytics === 'download_clicked' && !props.platform) {
+					props.platform = guessPlatform();
+				}
+				window.posthog.capture(el.dataset.analytics, props);
+			});
+		</script>
 	</body>
 </html>
 
@@ -246,6 +329,13 @@ const isCurrent = (href: string) => Astro.url.pathname === href || Astro.url.pat
 		box-sizing: border-box;
 	}
 
+	/* The download page toggles the `hidden` attribute via JS on elements
+	   (like .button) that set their own `display` — without this, that
+	   class's display value wins the cascade over the UA's [hidden] rule. */
+	[hidden] {
+		display: none !important;
+	}
+
 	html,
 	body {
 		margin: 0;
@@ -307,15 +397,264 @@ const isCurrent = (href: string) => Astro.url.pathname === href || Astro.url.pat
 		outline: 3px solid var(--accent-signature);
 		outline-offset: 2px;
 	}
+
+	/* Shared page-building blocks (Step 6.3) — kept here rather than
+	   redeclared per page, since every page in the Phase 2 inventory reuses
+	   the same container/section/button/prose/card-grid shapes. */
+	.container {
+		max-width: var(--max-width);
+		margin: 0 auto;
+		padding: 0 var(--space-6);
+	}
+
+	.section {
+		padding: var(--space-section) 0;
+	}
+
+	.section > h1,
+	.section > h2 {
+		text-align: center;
+	}
+
+	.section-lede {
+		max-width: 40rem;
+		margin: var(--space-3) auto 0;
+		color: var(--text-secondary);
+		text-align: center;
+	}
+
+	.button {
+		display: inline-block;
+		background: var(--accent-signature);
+		color: #ffffff;
+		text-decoration: none;
+		font-weight: 600;
+		padding: 0.75rem 1.5rem;
+		border-radius: var(--radius-default);
+		border: none;
+		font-size: var(--type-body);
+		font-family: var(--font-sans);
+		cursor: pointer;
+	}
+
+	.button:hover {
+		opacity: 0.9;
+		color: #ffffff;
+	}
+
+	.button-secondary {
+		display: inline-block;
+		background: transparent;
+		color: var(--text-primary);
+		text-decoration: none;
+		font-weight: 600;
+		padding: 0.75rem 1.5rem;
+		border-radius: var(--radius-default);
+		border: 1px solid var(--border-hairline);
+	}
+
+	.button-secondary:hover {
+		border-color: var(--accent-signature);
+		color: var(--accent-signature-on-text);
+	}
+
+	.prose h1 {
+		font-size: var(--type-h1);
+		margin-bottom: var(--space-2);
+	}
+
+	.prose .page-lede {
+		color: var(--text-secondary);
+		font-size: var(--type-body-lead);
+		margin: 0 0 var(--space-10);
+	}
+
+	.prose h2 {
+		font-size: var(--type-h3);
+		margin: var(--space-10) 0 var(--space-3);
+	}
+
+	.prose p,
+	.prose ul,
+	.prose ol {
+		margin: 0 0 var(--space-4);
+		color: var(--text-secondary);
+	}
+
+	.prose strong {
+		color: var(--text-primary);
+	}
+
+	.prose a {
+		text-decoration: underline;
+	}
+
+	/* .prose a's underline is for inline body links only — it must not
+	   bleed onto button-styled anchors (e.g. a tool/compare page's Download
+	   CTA, which lives inside a .prose container). */
+	.prose a.button,
+	.prose a.button-secondary,
+	.prose a.card-link {
+		text-decoration: none;
+	}
+
+	.prose code {
+		background: var(--bg-surface);
+		border: 1px solid var(--border-hairline);
+		border-radius: var(--radius-sm);
+		padding: 0.1rem 0.35rem;
+	}
+
+	.card-grid {
+		list-style: none;
+		margin: var(--space-10) 0 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+		gap: var(--space-5);
+	}
+
+	.card {
+		border: 1px solid var(--border-hairline);
+		border-radius: var(--radius-lg);
+		padding: var(--space-5);
+		background: var(--bg-surface);
+		transition: transform 0.15s ease;
+	}
+
+	.card:hover {
+		transform: translateY(-2px);
+	}
+
+	.card h3 {
+		margin: 0 0 var(--space-2);
+		font-size: 1.05rem;
+	}
+
+	.card p {
+		margin: 0;
+		color: var(--text-secondary);
+		font-size: 0.92rem;
+	}
+
+	.card a.card-link {
+		text-decoration: none;
+		color: inherit;
+		display: block;
+	}
+
+	.card a.card-link:hover h3 {
+		color: var(--accent-signature-on-text);
+	}
+
+	.compare-table {
+		width: 100%;
+		border-collapse: collapse;
+		margin: var(--space-6) 0;
+		font-size: var(--type-body);
+	}
+
+	.compare-table caption {
+		text-align: left;
+		color: var(--text-secondary);
+		margin-bottom: var(--space-3);
+	}
+
+	.compare-table th,
+	.compare-table td {
+		border: 1px solid var(--border-hairline);
+		padding: var(--space-3) var(--space-4);
+		text-align: left;
+		vertical-align: top;
+	}
+
+	.compare-table thead th {
+		background: var(--bg-surface);
+	}
+
+	.faq-list {
+		list-style: none;
+		margin: var(--space-8) 0 0;
+		padding: 0;
+	}
+
+	.faq-list details {
+		border-bottom: 1px solid var(--border-hairline);
+		padding: var(--space-4) 0;
+	}
+
+	.faq-list summary {
+		cursor: pointer;
+		list-style: none;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-4);
+	}
+
+	.faq-list summary::-webkit-details-marker {
+		display: none;
+	}
+
+	.faq-list summary::after {
+		content: '';
+		flex-shrink: 0;
+		width: 0.4rem;
+		height: 0.4rem;
+		border-style: solid;
+		border-color: var(--accent-signature);
+		border-width: 0 2px 2px 0;
+		transform: rotate(45deg);
+		transition: transform 0.2s ease;
+	}
+
+	.faq-list details[open] summary::after {
+		transform: rotate(225deg);
+	}
+
+	.faq-list summary h2 {
+		display: inline;
+		font-family: var(--font-sans);
+		font-weight: 600;
+		font-size: 1.05rem;
+	}
+
+	.faq-list .answer {
+		margin: var(--space-3) 0 0;
+		color: var(--text-secondary);
+		animation: faq-reveal 0.2s ease;
+	}
+
+	@keyframes faq-reveal {
+		from {
+			opacity: 0;
+			transform: translateY(-4px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	.back-link {
+		display: inline-block;
+		margin-bottom: var(--space-6);
+		color: var(--text-secondary);
+		font-size: var(--type-caption);
+	}
 </style>
 
 <style>
 	.site-header {
 		border-bottom: 1px solid var(--border-hairline);
-		background: var(--bg-surface);
+		background: var(--bg-base);
+		position: sticky;
+		top: 0;
+		z-index: 20;
 	}
 
 	.site-nav {
+		position: relative;
 		max-width: var(--max-width);
 		margin: 0 auto;
 		padding: var(--space-4) var(--space-6);
@@ -339,7 +678,7 @@ const isCurrent = (href: string) => Astro.url.pathname === href || Astro.url.pat
 		display: block;
 	}
 
-	.site-nav ul {
+	.site-nav .nav-links {
 		list-style: none;
 		display: flex;
 		gap: var(--space-6);
@@ -362,11 +701,81 @@ const isCurrent = (href: string) => Astro.url.pathname === href || Astro.url.pat
 		color: #ffffff;
 		padding: var(--space-2) var(--space-4);
 		border-radius: var(--radius-default);
+		transition: opacity 0.2s ease;
 	}
 
 	.site-nav a.cta:hover {
 		color: #ffffff;
 		opacity: 0.9;
+	}
+
+	.nav-actions {
+		display: flex;
+		align-items: center;
+		gap: var(--space-4);
+	}
+
+	/* Mobile nav — a checkbox-driven collapsible panel (landing-design.md §2's
+	   "wordmark + Download + hamburger" mobile treatment). The hamburger's
+	   expanded state wasn't drawn in that mockup; this is a plain dropdown
+	   panel with the same links, not a re-decided design. */
+	.nav-toggle-input {
+		position: absolute;
+		opacity: 0;
+		pointer-events: none;
+	}
+
+	.nav-toggle-label {
+		display: none;
+		flex-direction: column;
+		justify-content: center;
+		gap: 4px;
+		width: 32px;
+		height: 32px;
+		cursor: pointer;
+	}
+
+	.nav-toggle-label span {
+		display: block;
+		height: 2px;
+		background: var(--text-primary);
+		border-radius: 1px;
+	}
+
+	@media (max-width: 767px) {
+		.nav-toggle-label {
+			display: flex;
+		}
+
+		.site-nav .nav-links {
+			position: absolute;
+			top: 100%;
+			left: 0;
+			right: 0;
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 0;
+			background: var(--bg-base);
+			border-bottom: 1px solid var(--border-hairline);
+			max-height: 0;
+			overflow: hidden;
+			transition: max-height 0.2s ease;
+		}
+
+		.site-nav .nav-links li {
+			width: 100%;
+		}
+
+		.site-nav .nav-links a {
+			display: block;
+			padding: var(--space-4) var(--space-6);
+			width: 100%;
+			box-sizing: border-box;
+		}
+
+		#nav-toggle:checked ~ .nav-links {
+			max-height: 16rem;
+		}
 	}
 
 	.site-footer {
@@ -383,7 +792,30 @@ const isCurrent = (href: string) => Astro.url.pathname === href || Astro.url.pat
 		margin-bottom: var(--space-3);
 	}
 
+	.footer-links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-4);
+		margin-bottom: var(--space-3);
+	}
+
+	.footer-links a {
+		color: var(--text-secondary);
+	}
+
+	.footer-links a:hover {
+		color: var(--accent-signature-on-text);
+	}
+
+	.footer-compare {
+		font-size: var(--type-caption);
+	}
+
 	.site-footer p {
 		margin: 0.4rem 0;
+	}
+
+	.footer-copyright {
+		margin-top: var(--space-6);
 	}
 </style>

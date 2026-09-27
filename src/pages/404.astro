@@ -1,0 +1,28 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Page Not Found" description="" noindex={true}>
+	<section class="section container not-found">
+		<h1>Page not found.</h1>
+		<p>That page doesn't exist, or it moved.</p>
+		<div class="links">
+			<a class="button" href="/">Home</a>
+			<a class="button-secondary" href="/download/">Download</a>
+		</div>
+	</section>
+</Layout>
+
+<style>
+	.not-found {
+		max-width: 30rem;
+		text-align: center;
+	}
+
+	.links {
+		margin-top: var(--space-6);
+		display: flex;
+		gap: var(--space-3);
+		justify-content: center;
+	}
+</style>

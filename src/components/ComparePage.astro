@@ -1,0 +1,94 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+interface Row {
+	label: string;
+	umbra: string;
+	competitor: string;
+}
+
+interface Competitor {
+	name: string;
+	slug: string;
+}
+
+interface Props {
+	title: string;
+	description: string;
+	competitorName: string;
+	intro: string;
+	rows: Row[];
+	verdict: string;
+	others: Competitor[];
+}
+
+const { title, description, competitorName, intro, rows, verdict, others } = Astro.props;
+---
+
+<Layout title={title} description={description}>
+	<section class="section container prose compare-page">
+		<h1>Umbra vs. {competitorName}</h1>
+		<p class="page-lede">{intro}</p>
+
+		<table class="compare-table">
+			<thead>
+				<tr>
+					<th scope="col"></th>
+					<th scope="col">Umbra</th>
+					<th scope="col">{competitorName}</th>
+				</tr>
+			</thead>
+			<tbody>
+				{
+					rows.map((row) => (
+						<tr>
+							<th scope="row">{row.label}</th>
+							<td>{row.umbra}</td>
+							<td>{row.competitor}</td>
+						</tr>
+					))
+				}
+			</tbody>
+		</table>
+
+		<p>{verdict}</p>
+
+		<a class="button" href="/download/" data-analytics="download_clicked">Download</a>
+
+		<div class="cross-links">
+			<p>See how Umbra compares to the other three:</p>
+			<ul>
+				{
+					others.map((c) => (
+						<li>
+							<a href={`/compare/${c.slug}/`}>{c.name}</a>
+						</li>
+					))
+				}
+			</ul>
+		</div>
+	</section>
+</Layout>
+
+<style>
+	.compare-page {
+		max-width: 44rem;
+	}
+
+	.compare-page .button {
+		margin: var(--space-6) 0 var(--space-10);
+		display: inline-block;
+	}
+
+	.cross-links {
+		border-top: 1px solid var(--border-hairline);
+		padding-top: var(--space-6);
+	}
+
+	.cross-links ul {
+		list-style: none;
+		padding: 0;
+		display: flex;
+		gap: var(--space-4);
+	}
+</style>

@@ -1,0 +1,25 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+
+const faqs = [
+	{
+		q: 'Why not generate UUIDs with a free online tool?',
+		a: "A UUID generator has no reason to ever touch a network — there's nothing to send. Umbra's generates locally and instantly, in bulk if needed.",
+	},
+	{
+		q: "What's the difference between v4 and v7?",
+		a: 'v4 is random; v7 is time-ordered, which makes it sort naturally by creation time — a better choice for a database key.',
+	},
+];
+---
+
+<ToolPage
+	title="UUID Generator (v4 & v7) — Offline"
+	description="Generate random (v4) or time-ordered (v7) UUIDs, one at a time or in bulk, entirely offline."
+	name="UUID"
+	directAnswer="Umbra's UUID tool generates v4 or v7 identifiers (also called GUIDs), one at a time or in bulk, entirely offline."
+	body="Generate random (v4) or time-ordered (v7) UUIDs, formatted with your choice of case, hyphens, and braces. Generate in bulk and copy or download the full list as a file."
+	screenshotSlug="uuid"
+	screenshotAlt="Umbra's UUID tool showing five generated v4 identifiers with case and hyphen formatting options."
+	faqs={faqs}
+/>

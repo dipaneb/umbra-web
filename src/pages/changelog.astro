@@ -1,0 +1,167 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// Hybrid content model (landing-ia.md §5): version/date are read live from
+// the GitHub Releases API at build time; the Added/Changed/Fixed summaries
+// are curated by hand from each release's own notes, never auto-generated
+// from the raw body (Step 2.1's "like a language/framework changelog" call).
+// Only stable releases with a hand-written entry below are shown — pre-
+// releases and the three earliest tags (which shipped placeholder release
+// notes with nothing to categorize) are omitted rather than padded.
+const curated: Record<string, { added?: string[]; changed?: string[]; fixed?: string[] }> = {
+	'v0.4.0': {
+		added: [
+			'AVIF export and a live before/after comparison slider in Images.',
+			'PDF page-range extraction, and merging pages into an already-open document.',
+			"Update notifications show each release's notes in your own language.",
+		],
+		changed: [
+			'Images processes multiple files as an independent queue, with per-file progress, instead of one at a time.',
+			'Images can resize on export and set a background color for transparent-to-opaque conversions.',
+			'PDF shows real page previews.',
+		],
+		fixed: ['PDF handles malformed and hostile documents more safely; large documents merge and extract reliably.'],
+	},
+	'v0.3.0': {
+		added: [
+			'UUID format toggles (case, braces, hyphens) and bulk generation saved to a file.',
+			'Hash lets you choose which algorithms run and adds a Verify panel that checks a pasted digest against every selected algorithm.',
+			'JWT shows relative and absolute time for claims with a live-updating clock, and flags unsigned tokens.',
+			"Cron's guided builder replaces the old free-text description box, with a field-by-field breakdown.",
+		],
+		changed: [
+			'Image to Text overlays selectable text directly on the image instead of a separate box, and marks uncertain regions on the image itself.',
+			'Image to Text, PDF, and Images split out of the old "Bucket" grouping into their own sidebar tools.',
+			'Base64 converts live as you type, and builds and decodes data URIs in place.',
+		],
+		fixed: ['Image to Text no longer misreads sideways or rotated photos as "no text found."'],
+	},
+	'v0.2.1': {
+		added: [
+			'JSON tool rebuilt with six tabs — Explorer, Validate, Repair, Query, Diff, Transform.',
+			'JSON Repair previews a fix before applying it; Query runs JSONPath expressions; Diff compares by structure; Transform generates a matching TypeScript interface.',
+		],
+		changed: ['Umbra has a proper app icon, replacing the placeholder Tauri icon.'],
+		fixed: [
+			'Text fields no longer auto-convert straight quotes to curly ones.',
+			'Button and spacing inconsistencies across tools.',
+		],
+	},
+	'v0.1.5': {
+		added: ['French language support (Settings → Appearance).'],
+		fixed: [
+			"Update dialog's release-date formatting, duplicate release notes, and keyboard focus handling.",
+		],
+	},
+	'v0.1.4': {
+		fixed: ["Update dialog now shows each release's actual notes instead of the same placeholder text every time."],
+	},
+};
+
+// Static fallback (same dates GitHub reports as of this build) in case the
+// live fetch fails — e.g. an offline build — so the page still renders.
+const fallbackDates: Record<string, string> = {
+	'v0.4.0': '2026-09-15T22:55:09Z',
+	'v0.3.0': '2026-09-10T23:48:51Z',
+	'v0.2.1': '2026-08-27T21:56:51Z',
+	'v0.1.5': '2026-08-23T22:56:32Z',
+	'v0.1.4': '2026-08-18T23:23:33Z',
+};
+
+let dates = fallbackDates;
+try {
+	const res = await fetch('https://api.github.com/repos/dipaneb/umbra/releases');
+	if (res.ok) {
+		const data = await res.json();
+		const live: Record<string, string> = {};
+		for (const r of data) {
+			if (curated[r.tag_name]) live[r.tag_name] = r.published_at;
+		}
+		if (Object.keys(live).length > 0) dates = live;
+	}
+} catch {
+	// keep fallbackDates
+}
+
+const entries = Object.entries(curated)
+	.map(([tag, changes]) => ({ tag, date: dates[tag], ...changes }))
+	.filter((entry) => entry.date)
+	.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+function formatDate(iso: string) {
+	// UTC explicitly — this runs at build time, and the release date shouldn't
+	// shift by a day depending on which timezone the build happens to run in.
+	return new Date(iso).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+}
+---
+
+<Layout
+	title="Changelog"
+	description="What's shipped in Umbra, release by release, pulled directly from GitHub — added, changed, fixed."
+>
+	<section class="section container prose changelog-page">
+		<h1>Changelog</h1>
+		<p class="page-lede">What's shipped, pulled straight from GitHub releases.</p>
+
+		{
+			entries.map((entry) => (
+				<article class="entry">
+					<h2>
+						{entry.tag} — {formatDate(entry.date)}
+					</h2>
+					{entry.added && (
+						<div class="category">
+							<h3>Added</h3>
+							<ul>{entry.added.map((line) => <li>{line}</li>)}</ul>
+						</div>
+					)}
+					{entry.changed && (
+						<div class="category">
+							<h3>Changed</h3>
+							<ul>{entry.changed.map((line) => <li>{line}</li>)}</ul>
+						</div>
+					)}
+					{entry.fixed && (
+						<div class="category">
+							<h3>Fixed</h3>
+							<ul>{entry.fixed.map((line) => <li>{line}</li>)}</ul>
+						</div>
+					)}
+				</article>
+			))
+		}
+
+		<p class="full-notes">
+			<a href="https://github.com/dipaneb/umbra/releases">Full release notes on GitHub.</a>
+		</p>
+	</section>
+</Layout>
+
+<style>
+	.changelog-page {
+		max-width: 42rem;
+	}
+
+	.entry {
+		border-top: 1px solid var(--border-hairline);
+		padding: var(--space-6) 0;
+	}
+
+	.entry h2 {
+		font-family: var(--font-mono);
+		font-size: var(--type-h3);
+		margin-bottom: var(--space-3);
+	}
+
+	.category h3 {
+		font-size: var(--type-caption);
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+		color: var(--text-secondary);
+		margin: var(--space-3) 0 var(--space-1);
+	}
+
+	.full-notes {
+		margin-top: var(--space-8);
+	}
+</style>

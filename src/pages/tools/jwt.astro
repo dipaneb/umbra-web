@@ -1,0 +1,29 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+
+const faqs = [
+	{
+		q: 'Why not decode a JWT with a free online tool?',
+		a: 'A JWT often carries real session or identity data — Umbra decodes entirely on your machine and never transmits it.',
+	},
+	{
+		q: 'Does it verify the signature?',
+		a: 'No, and it says so — verifying requires the signing key, which this tool never asks for.',
+	},
+	{
+		q: "Can it warn me if a token isn't signed?",
+		a: 'Yes — Umbra flags a token as unsigned or using an unreadable algorithm, which means anyone could have created or altered it, before you read anything else on the page.',
+	},
+];
+---
+
+<ToolPage
+	title="JWT Decoder — Offline, No Server"
+	description="Decode a JWT's header and payload entirely offline — it never leaves your machine, and this tool doesn't verify signatures."
+	name="JWT"
+	directAnswer="Umbra's JWT tool decodes a token's header and payload entirely offline — it never sends the token anywhere, and it doesn't verify signatures."
+	body="Paste a token to see its header and payload laid out clearly, with expiry and issued-at claims translated into plain language (“expires in 3 days,” not a raw timestamp). It reads the token; it doesn't check whether it's genuine — stated plainly in the tool itself."
+	screenshotSlug="jwt"
+	screenshotAlt="Umbra's JWT tool showing a decoded token's header and payload."
+	faqs={faqs}
+/>

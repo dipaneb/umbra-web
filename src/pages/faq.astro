@@ -3,90 +3,92 @@ import Layout from '../layouts/Layout.astro';
 
 const faqs = [
 	{
-		id: 'open-source',
+		id: 'windows-smartscreen-warning',
+		q: 'Why did Windows warn me this file might be dangerous?',
+		a: `Windows shows a "Windows protected your PC" warning for any app that isn't code-signed — and Umbra's Windows build currently isn't. Code-signing needs a certificate that costs money to buy and renew every year, which hasn't been justified yet for a free project with no revenue. This isn't a finding about Umbra specifically; it's Windows' standard response to any unsigned .exe. To open it: click More info, then Run anyway.`,
+	},
+	{
+		id: 'open-source-and-audit-status',
 		q: 'Is Umbra open source?',
-		a: "No. Umbra's code is public — you can read it on GitHub — but its license is All Rights Reserved, not an open-source license. You're welcome to look, but not to reuse or fork it.",
+		a: `No — Umbra is source-available, not open source. The repository is public, so you (or anyone) can read the code and confirm what it does, including the networking layer. But the licence is All Rights Reserved: nobody has the right to copy, modify, redistribute, or reuse it without written permission. There's also no formal third-party audit — the closest thing is the network-monitor check described on the home page's "Verify it yourself" section, which you can run yourself against your own downloaded copy.`,
 	},
 	{
-		id: 'network',
-		q: 'What does Umbra send over the network?',
-		a: 'Exactly one thing: an automatic check for app updates. That check is disclosed in the app itself (Settings) and in the README, not just here. Installing an update always asks for your explicit confirmation first — nothing installs silently.',
+		id: 'windows-linux-trust-parity',
+		q: 'Are the Windows and Linux builds as trustworthy as the macOS one?',
+		a: `Not in the same way — Umbra's Windows and Linux builds are best-effort, while macOS is the primary platform: fully tested, signed with a Developer ID certificate, and notarized by Apple. Windows and Linux are built by the same release pipeline, but not tested on a second machine the way macOS is, and the Windows build isn't code-signed yet.`,
 	},
 	{
-		id: 'analytics',
-		q: 'Does Umbra track me?',
-		a: "The app has no telemetry, analytics, or tracking of any kind — verified before every release with a network-monitor check, not just claimed. This website (umbra-web) is different: it uses PostHog for anonymous page-view counts, with session recording turned off. That's this site's analytics, not the app's.",
+		id: 'update-behavior',
+		q: 'Does updating Umbra install anything without asking me?',
+		a: `No. Every update shows a confirmation dialog before anything installs. If you decline, Umbra keeps running exactly as it was — nothing changes without you saying so.`,
 	},
 	{
-		id: 'platforms',
-		q: 'What platforms does Umbra support?',
-		a: 'macOS on Apple Silicon (M-series chips) today. There is no Intel Mac, Windows, or Linux build yet.',
+		id: 'update-check-vs-zero-network-calls',
+		q: `Doesn't checking for updates break the "zero network calls" promise?`,
+		a: `The update check is Umbra's one disclosed exception to that promise. Once, at launch, Umbra checks GitHub for a newer release — that's the only network call it ever makes, and it's the same call named in the home page's "Verify it yourself" section. Only the install step itself waits for your confirmation; the check runs automatically. This is also the app's entire analytics footprint — Umbra itself sends no telemetry of any kind; the anonymous page-view analytics on this website are a separate, site-only concern (see the Privacy policy).`,
 	},
 	{
-		id: 'verified',
-		q: 'How do I know the privacy claim is actually true?',
-		a: "Every release goes through a written, executed checklist that captures a live network trace of the app and confirms the only connection made is the disclosed update check — not just a one-time audit, a per-release gate.",
+		id: 'comparison-to-named-competitors',
+		q: 'How is Umbra different from DevToys, DevUtils, or DevTools-X?',
+		a: null,
 	},
 	{
-		id: 'tools',
-		q: 'What tools are in Umbra?',
-		a: 'JSON formatting/validation, Base64 encode/decode, UUID generation, hashing, JWT decoding, cron expression translation, and image-to-text (OCR) — all running locally.',
+		id: 'free-online-tools',
+		q: 'Why not just use a free online JSON formatter or JWT decoder instead?',
+		a: null,
+	},
+	{
+		id: 'verify-privacy-yourself',
+		q: `Is there a way to check that Umbra actually isn't sending my data anywhere, rather than just trusting what it says?`,
+		a: `Yes — run a network monitor while Umbra is running and watch what it actually does, on your own downloaded copy, instead of taking the claim on faith. On macOS: quit and relaunch Umbra while nettop -p $(pgrep -x umbra) is already running in a terminal. You'll see exactly one connection — the update check, at launch — and nothing else, no matter which tool you use. (macOS only; Windows and Linux instructions don't exist yet.) The full reasoning is on the home page's "Verify it yourself" section.`,
 	},
 ];
 ---
 
-<Layout
-	title="FAQ"
-	description="Answers about Umbra's privacy model, license, supported platforms, and what this website's analytics does and doesn't collect."
->
-	<section class="faq">
-		<h1>Frequently asked questions</h1>
-		<dl>
+<Layout title="FAQ" description="Is Umbra open source? Is it safe on Windows? Does it phone home? Direct answers to the most common questions.">
+	<section class="section container prose faq-page">
+		<h1>FAQ</h1>
+		<p class="page-lede">Common questions, answered directly.</p>
+
+		<ul class="faq-list">
 			{
 				faqs.map((item) => (
-					<div class="faq-item" id={item.id}>
-						<dt>{item.q}</dt>
-						<dd>{item.a}</dd>
-					</div>
+					<li>
+						<details id={item.id}>
+							<summary><h2>{item.q}</h2></summary>
+							{item.id === 'comparison-to-named-competitors' ? (
+								<p class="answer">
+									The short version: Umbra leads with one narrow claim none of them make the same
+									way — a per-release check showing zero network calls, not just a sentence
+									asserting privacy. The full, sourced comparisons live on their own pages:{' '}
+									<a href="/compare/devtoys/">DevToys</a>, <a href="/compare/devutils/">DevUtils</a>,{' '}
+									<a href="/compare/devtools-x/">DevTools-X</a>, <a href="/compare/cyberchef/">CyberChef</a>.
+								</p>
+							) : item.id === 'free-online-tools' ? (
+								<p class="answer">
+									Because anything you paste into a web tool leaves your machine, even briefly —
+									you're trusting a server you don't control and can't inspect. Umbra runs
+									entirely on your device: nothing you paste, drop, or type is ever sent anywhere.
+									Each tool has its own page with more on this for that specific format:{' '}
+									<a href="/tools/json/">JSON</a>, <a href="/tools/base64/">Base64</a>,{' '}
+									<a href="/tools/uuid/">UUID</a>, <a href="/tools/hash/">Hash</a>,{' '}
+									<a href="/tools/jwt/">JWT</a>, <a href="/tools/cron/">Cron</a>,{' '}
+									<a href="/tools/ocr/">Image to Text</a>, <a href="/tools/pdf/">PDF</a>,{' '}
+									<a href="/tools/image/">Images</a>.
+								</p>
+							) : (
+								<p class="answer">{item.a}</p>
+							)}
+						</details>
+					</li>
 				))
 			}
-		</dl>
+		</ul>
 	</section>
 </Layout>
 
 <style>
-	.faq {
+	.faq-page {
 		max-width: 42rem;
-		margin: 0 auto;
-		padding: 4rem 1.5rem;
-	}
-
-	.faq h1 {
-		margin-bottom: 2rem;
-	}
-
-	.faq dl {
-		margin: 0;
-	}
-
-	.faq-item {
-		padding: 1.5rem 0;
-		border-top: 1px solid var(--border-hairline);
-		scroll-margin-top: 5rem;
-	}
-
-	.faq-item:last-child {
-		border-bottom: 1px solid var(--border-hairline);
-	}
-
-	.faq-item dt {
-		font-weight: 700;
-		font-size: 1.05rem;
-		margin-bottom: 0.5rem;
-	}
-
-	.faq-item dd {
-		margin: 0;
-		color: var(--text-secondary);
 	}
 </style>
