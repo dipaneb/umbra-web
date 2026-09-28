@@ -28,7 +28,17 @@ const {
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+// Astro always emits the top-level 404 page as a flat `404.html`
+// (Context7-verified, /withastro/docs: "This will build to a 404.html
+// page"), the one route where the real output ignores this site's
+// `trailingSlash: 'always'` directory convention — `Astro.url.pathname`
+// itself still reports `/404/`. `/fr/404` isn't host-special-cased, so it
+// keeps the normal `index.html`-in-a-directory shape at `/fr/404/`. Caught
+// live by lychee (Step 6.11): canonical/hreflang/lang-switch links on both
+// 404 pages pointed at `/404/`, a URL that 404s for real.
+const isNotFoundPage = Astro.url.pathname === '/404/' || Astro.url.pathname === '/fr/404/';
+const canonicalPathname = Astro.url.pathname === '/404/' ? '/404' : Astro.url.pathname;
+const canonicalURL = new URL(canonicalPathname, Astro.site);
 const isProd = import.meta.env.PROD;
 const isHome = Astro.url.pathname === '/' || Astro.url.pathname === '/fr/';
 // Home is the brand — `Umbra — {value}`; every other page is `{value} — Umbra` (landing-copy.md §7).
@@ -42,8 +52,8 @@ const isCurrent = (href: string) => Astro.url.pathname === href || Astro.url.pat
 // locale's copy of *this same page*, computed generically from the `/fr`
 // prefix rather than a per-page lookup table, since no route is
 // slug-translated.
-const enPath = delocalizePath(Astro.url.pathname);
-const frPath = localizePath(enPath, 'fr');
+const enPath = isNotFoundPage ? '/404' : delocalizePath(Astro.url.pathname);
+const frPath = isNotFoundPage ? '/fr/404/' : localizePath(enPath, 'fr');
 const enHref = new URL(enPath, Astro.site).toString();
 const frHref = new URL(frPath, Astro.site).toString();
 const langSwitchHref = lang === 'en' ? frPath : enPath;

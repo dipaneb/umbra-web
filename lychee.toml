@@ -1,0 +1,28 @@
+# Step 6.11 — Build gates. Auto-loaded by `lycheeverse/lychee-action` and by
+# a local `lychee` run alike. `--root-dir` and `--remap` (mapping this site's
+# own absolute canonical/hreflang/og:url URLs back onto the local build
+# instead of hitting the live domain) need the runner's absolute checkout
+# path, which a static config file can't express, so those stay in the
+# workflow's `args` instead.
+
+# Directory links (e.g. `/faq/`) only count as valid if the directory
+# actually contains an index file — not merely if the directory exists.
+index_files = ["index.html"]
+
+# Astro's one hard exception (Layout.astro, Step 6.11's own fix): the
+# top-level `/404` page builds to a flat `404.html`, not a directory. This
+# resolves that root-relative link to the file it actually is.
+fallback_extensions = ["html"]
+
+# Also validate in-page anchors (e.g. Layout.astro's `#main-content` skip
+# link) alongside normal URL checks. `anchor-only`, not `full` — this site
+# has no `#:~:text=` text-fragment links to check.
+include_fragments = "anchor-only"
+
+# lychee's defaults (3 retries, 128 concurrent requests) are tuned for
+# scanning big sites fast; this is a 46-page brochure site hitting a handful
+# of external hosts (GitHub, PostHog, schema.org), so trade a little more
+# patience per host for fewer transient CI failures.
+max_retries = 5
+retry_wait_time = 2
+timeout = 20

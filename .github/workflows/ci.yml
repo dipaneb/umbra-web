@@ -1,0 +1,50 @@
+name: CI
+
+# Step 6.11 — Build gates. Story 5.4 explicitly deferred this ("no testing
+# convention exists yet"); a broken link or a failed build now fails the
+# build instead of shipping silently.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-check-links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm build
+
+      - name: Check links
+        uses: lycheeverse/lychee-action@v2
+        env:
+          # Avoids GitHub API rate-limiting on github.com/dipaneb/umbra links
+          # (lychee reads this env var itself; no extra secret needed).
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # `--root-dir` maps this site's root-relative links (e.g. `/faq/`)
+          # onto the built output. `--remap` does the same for the
+          # fully-qualified `https://umbra.dipane.fr/...` URLs Layout.astro
+          # emits (canonical, og:url, hreflang) — without it, lychee would
+          # check those against the live (previous) deploy instead of the
+          # build this workflow just produced. Both need this runner's
+          # absolute checkout path, so they can't live in `lychee.toml`
+          # (which the action still auto-loads from the repo root for
+          # everything else — fallback extensions, retries, fragments).
+          args: >-
+            --root-dir "${{ github.workspace }}/dist"
+            --remap "https://umbra.dipane.fr file://${{ github.workspace }}/dist"
+            --no-progress
+            ./dist
+          fail: true
