@@ -13,7 +13,7 @@
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'none'; script-src 'self' https://eu-assets.i.posthog.com; connect-src 'self' https://eu.i.posthog.com https://api.github.com; style-src 'self'; img-src 'self'; font-src 'self'; media-src 'self'; manifest-src 'self'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; object-src 'none'; upgrade-insecure-requests"
+          "value": "default-src 'none'; script-src 'self' https://eu-assets.i.posthog.com; connect-src 'self' https://eu.i.posthog.com https://api.github.com; style-src 'self' 'sha256-WjpDiaPR+W9uvP2QOp1nqOEkEd5e0d09CR1Hyzx4afQ=' 'sha256-UiMIfITb44uPb0sNwF8QKMWBP8hDVOhqjPKxPj7KwE8=' 'sha256-Nju+LOIAg8m61FA1vmvkcaCtvhHbSS6MVk6kQVrDHAA='; img-src 'self'; font-src 'self'; media-src 'self'; manifest-src 'self'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; object-src 'none'; upgrade-insecure-requests"
         },
         {
           "key": "X-Content-Type-Options",
