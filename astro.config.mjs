@@ -11,19 +11,6 @@ export default defineConfig({
   // Pins one canonical URL form per page (matches the directory/index.html
   // build output) so /faq and /faq/ don't count as two distinct URLs for SEO.
   trailingSlash: 'always',
-  build: {
-    // Step 6.12 — vercel.json's CSP ships `style-src 'self'` with no
-    // `unsafe-inline`. Astro's default ('auto') inlines any component
-    // <style> block under 4kb directly into the page instead of an
-    // external file — CSP-invisible until you actually load the page in
-    // a browser with the policy on, since the HTML still looks fine and
-    // `astro build` never warns. `'never'` forces every component's CSS
-    // external permanently, so style-src needs no per-page hash that
-    // would silently go stale on the next routine CSS edit. This is
-    // separate from the Font component's own @font-face <style> tags
-    // below, which aren't governed by this setting at all.
-    inlineStylesheets: 'never',
-  },
   // Step 6.5 — French ships alongside English at launch (landing-strategy.md,
   // decisions table, revised 2026-09-19). `prefixDefaultLocale: false` keeps
   // English unprefixed at `/` (page files stay at `src/pages/*.astro`) since
