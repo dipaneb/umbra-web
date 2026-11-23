@@ -14,7 +14,7 @@
     "perf:budget": "astro build && lhci autorun"
   },
   "dependencies": {
-    "@astrojs/sitemap": "^3.7.4",
+    "@astrojs/sitemap": "^3.7.6",
     "astro": "^7.4.4"
   },
   "devDependencies": {
